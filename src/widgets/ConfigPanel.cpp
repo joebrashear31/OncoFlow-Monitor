@@ -1,7 +1,14 @@
 #include "ConfigPanel.h"
+#include "utils/JsonUtils.h"
+
+#include <QDir>
+#include <QFile>
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QHBoxLayout>
+#include <QInputDialog>
+#include <QJsonDocument>
+#include <QMessageBox>
 #include <QVBoxLayout>
 
 ConfigPanel::ConfigPanel(QWidget *parent) : QWidget(parent)
@@ -38,12 +45,18 @@ ConfigPanel::ConfigPanel(QWidget *parent) : QWidget(parent)
     m_saveIntermediates = new QCheckBox(tr("Enabled"));
     form->addRow(tr("Save Intermediates:"), m_saveIntermediates);
 
+    // Presets
+    auto *presetRow = new QHBoxLayout;
+    m_presetCombo = new QComboBox;
+    m_presetCombo->addItem(tr("(Select Preset)"));
+    m_savePresetBtn = new QPushButton(tr("Save Preset..."));
+    presetRow->addWidget(m_presetCombo, 1);
+    presetRow->addWidget(m_savePresetBtn);
+    form->addRow(tr("Preset:"), presetRow);
+
     auto *btnRow = new QHBoxLayout;
     auto *defaultsBtn = new QPushButton(tr("Restore Defaults"));
-    auto *savePresetBtn = new QPushButton(tr("Save Preset..."));
-    savePresetBtn->setEnabled(false); // placeholder
     btnRow->addWidget(defaultsBtn);
-    btnRow->addWidget(savePresetBtn);
     btnRow->addStretch();
 
     auto *mainLayout = new QVBoxLayout(this);
@@ -53,8 +66,12 @@ ConfigPanel::ConfigPanel(QWidget *parent) : QWidget(parent)
 
     connect(browseBtn, &QPushButton::clicked, this, &ConfigPanel::browseOutputDir);
     connect(defaultsBtn, &QPushButton::clicked, this, &ConfigPanel::restoreDefaults);
+    connect(m_savePresetBtn, &QPushButton::clicked, this, &ConfigPanel::savePreset);
+    connect(m_presetCombo, &QComboBox::currentTextChanged, this, [this](const QString &name) {
+        if (name != tr("(Select Preset)"))
+            loadPreset(name);
+    });
 
-    // Emit configChanged on any edit
     connect(m_modelVersion, &QComboBox::currentIndexChanged, this, &ConfigPanel::configChanged);
     connect(m_registrationMode, &QComboBox::currentIndexChanged, this, &ConfigPanel::configChanged);
     connect(m_threshold, &QDoubleSpinBox::valueChanged, this, &ConfigPanel::configChanged);
@@ -90,6 +107,14 @@ void ConfigPanel::loadConfig(const PipelineConfig &cfg)
     m_saveIntermediates->setChecked(cfg.saveIntermediates);
 }
 
+void ConfigPanel::setPresetsDir(const QString &dir)
+{
+    m_presetsDir = dir;
+    QDir d(dir);
+    if (!d.exists()) d.mkpath(".");
+    refreshPresetList();
+}
+
 void ConfigPanel::restoreDefaults()
 {
     loadConfig(PipelineConfig{});
@@ -100,4 +125,46 @@ void ConfigPanel::browseOutputDir()
     QString dir = QFileDialog::getExistingDirectory(this, tr("Select Output Directory"), m_outputDir->text());
     if (!dir.isEmpty())
         m_outputDir->setText(dir);
+}
+
+void ConfigPanel::savePreset()
+{
+    bool ok;
+    QString name = QInputDialog::getText(this, tr("Save Preset"), tr("Preset name:"),
+                                          QLineEdit::Normal, {}, &ok);
+    if (!ok || name.trimmed().isEmpty()) return;
+
+    QDir dir(m_presetsDir);
+    if (!dir.exists()) dir.mkpath(".");
+
+    QFile file(dir.filePath(name + ".json"));
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::warning(this, tr("Error"), tr("Could not save preset."));
+        return;
+    }
+    file.write(QJsonDocument(JsonUtils::configToJson(currentConfig())).toJson());
+    refreshPresetList();
+}
+
+void ConfigPanel::loadPreset(const QString &name)
+{
+    QFile file(QDir(m_presetsDir).filePath(name + ".json"));
+    if (!file.open(QIODevice::ReadOnly)) return;
+
+    auto doc = QJsonDocument::fromJson(file.readAll());
+    if (doc.isObject())
+        loadConfig(JsonUtils::configFromJson(doc.object()));
+}
+
+void ConfigPanel::refreshPresetList()
+{
+    m_presetCombo->blockSignals(true);
+    m_presetCombo->clear();
+    m_presetCombo->addItem(tr("(Select Preset)"));
+
+    QDir dir(m_presetsDir);
+    for (const auto &entry : dir.entryList({"*.json"}, QDir::Files)) {
+        m_presetCombo->addItem(entry.chopped(5)); // remove .json
+    }
+    m_presetCombo->blockSignals(false);
 }

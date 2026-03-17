@@ -14,6 +14,7 @@ public:
     explicit ConfigPanel(QWidget *parent = nullptr);
     PipelineConfig currentConfig() const;
     void loadConfig(const PipelineConfig &cfg);
+    void setPresetsDir(const QString &dir);
 
 signals:
     void configChanged();
@@ -21,6 +22,9 @@ signals:
 private slots:
     void restoreDefaults();
     void browseOutputDir();
+    void savePreset();
+    void loadPreset(const QString &name);
+    void refreshPresetList();
 
 private:
     QComboBox *m_modelVersion;
@@ -30,4 +34,7 @@ private:
     QLineEdit *m_outputDir;
     QCheckBox *m_strictValidation;
     QCheckBox *m_saveIntermediates;
+    QComboBox *m_presetCombo;
+    QPushButton *m_savePresetBtn;
+    QString m_presetsDir;
 };

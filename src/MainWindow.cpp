@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connectPipeline();
     loadStudies();
     m_historyPanel->setRuns(m_historyService->loadHistory());
+    m_configPanel->setPresetsDir(QCoreApplication::applicationDirPath() + "/data/presets");
 }
 
 void MainWindow::setupMenuBar()
