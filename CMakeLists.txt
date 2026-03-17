@@ -12,10 +12,18 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Core)
 set(SOURCES
     src/main.cpp
     src/MainWindow.cpp
+    src/services/StudyService.cpp
+    src/widgets/StudyListWidget.cpp
 )
 
 set(HEADERS
     src/MainWindow.h
+    src/models/Study.h
+    src/models/PipelineConfig.h
+    src/models/PipelineRun.h
+    src/models/LogEntry.h
+    src/services/StudyService.h
+    src/widgets/StudyListWidget.h
 )
 
 add_executable(OncoFlowMonitor ${SOURCES} ${HEADERS})

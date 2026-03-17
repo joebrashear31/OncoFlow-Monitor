@@ -1,6 +1,9 @@
 #include "MainWindow.h"
+#include "services/StudyService.h"
+#include "widgets/StudyListWidget.h"
 
 #include <QApplication>
+#include <QCoreApplication>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QMessageBox>
@@ -19,14 +22,16 @@ MainWindow::MainWindow(QWidget *parent)
     setupToolBar();
     setupCentralLayout();
     setupStatusBar();
+    loadStudies();
 }
 
 void MainWindow::setupMenuBar()
 {
     auto *fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(tr("&Reload Studies"), this, [this]() {
-        statusBar()->showMessage(tr("Studies reloaded."), 3000);
-    });
+
+    auto *reloadAction = fileMenu->addAction(tr("&Reload Studies"));
+    connect(reloadAction, &QAction::triggered, this, &MainWindow::onReloadStudies);
+
     fileMenu->addSeparator();
     auto *exitAction = fileMenu->addAction(tr("E&xit"));
     exitAction->setShortcut(QKeySequence::Quit);
@@ -61,6 +66,7 @@ void MainWindow::setupToolBar()
     m_reloadAction = toolbar->addAction(tr("Reload Studies"));
     m_reloadAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_L));
     m_reloadAction->setToolTip(tr("Reload mock studies from disk"));
+    connect(m_reloadAction, &QAction::triggered, this, &MainWindow::onReloadStudies);
 }
 
 void MainWindow::setupCentralLayout()
@@ -68,10 +74,13 @@ void MainWindow::setupCentralLayout()
     // --- Left panel: Study Selection ---
     auto *studyGroup = new QGroupBox(tr("Study Selection"));
     auto *studyLayout = new QVBoxLayout(studyGroup);
-    m_studyPanel = new QLabel(tr("Study list will appear here."));
-    static_cast<QLabel *>(m_studyPanel)->setAlignment(Qt::AlignCenter);
-    studyLayout->addWidget(m_studyPanel);
+    m_studyListWidget = new StudyListWidget;
+    studyLayout->addWidget(m_studyListWidget);
     studyGroup->setMinimumWidth(220);
+
+    connect(m_studyListWidget, &StudyListWidget::studySelected, this, [this](const Study &s) {
+        statusBar()->showMessage(tr("Selected: %1").arg(s.studyId), 3000);
+    });
 
     // --- Middle panel: Pipeline Configuration ---
     auto *configGroup = new QGroupBox(tr("Pipeline Configuration"));
@@ -129,4 +138,18 @@ void MainWindow::setupCentralLayout()
 void MainWindow::setupStatusBar()
 {
     statusBar()->showMessage(tr("Ready"));
+}
+
+void MainWindow::loadStudies()
+{
+    StudyService service;
+    QString path = QCoreApplication::applicationDirPath() + "/assets/mock_studies.json";
+    auto studies = service.loadStudies(path);
+    m_studyListWidget->setStudies(studies);
+    statusBar()->showMessage(tr("Loaded %1 studies.").arg(studies.size()), 3000);
+}
+
+void MainWindow::onReloadStudies()
+{
+    loadStudies();
 }

@@ -9,6 +9,8 @@
 #include <QAction>
 #include <QWidget>
 
+class StudyListWidget;
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -16,14 +18,18 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override = default;
 
+private slots:
+    void onReloadStudies();
+
 private:
     void setupMenuBar();
     void setupToolBar();
     void setupCentralLayout();
     void setupStatusBar();
+    void loadStudies();
 
-    // Placeholder panels (will be replaced with real widgets)
-    QWidget *m_studyPanel = nullptr;
+    // Panels
+    StudyListWidget *m_studyListWidget = nullptr;
     QWidget *m_configPanel = nullptr;
     QWidget *m_statusPanel = nullptr;
     QWidget *m_logPanel = nullptr;
