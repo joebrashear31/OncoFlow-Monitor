@@ -20,6 +20,8 @@ set(SOURCES
     src/widgets/LogPanel.cpp
     src/services/PipelineController.cpp
     src/services/PipelineWorker.cpp
+    src/services/HistoryService.cpp
+    src/widgets/HistoryPanel.cpp
 )
 
 set(HEADERS
@@ -36,6 +38,8 @@ set(HEADERS
     src/widgets/LogPanel.h
     src/services/PipelineController.h
     src/services/PipelineWorker.h
+    src/services/HistoryService.h
+    src/widgets/HistoryPanel.h
 )
 
 add_executable(OncoFlowMonitor ${SOURCES} ${HEADERS})

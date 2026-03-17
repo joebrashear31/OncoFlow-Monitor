@@ -1,10 +1,12 @@
 #include "MainWindow.h"
+#include "services/HistoryService.h"
 #include "services/PipelineController.h"
 #include "services/StudyService.h"
 #include "services/ValidationService.h"
 #include "widgets/ConfigPanel.h"
 #include "widgets/LogPanel.h"
 #include "widgets/StatusPanel.h"
+#include "widgets/HistoryPanel.h"
 #include "widgets/StudyListWidget.h"
 
 #include <QApplication>
@@ -24,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     setMinimumSize(900, 600);
 
     m_pipelineController = new PipelineController(this);
+    QString histDir = QCoreApplication::applicationDirPath() + "/data/history";
+    m_historyService = new HistoryService(histDir);
 
     setupMenuBar();
     setupToolBar();
@@ -31,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     setupStatusBar();
     connectPipeline();
     loadStudies();
+    m_historyPanel->setRuns(m_historyService->loadHistory());
 }
 
 void MainWindow::setupMenuBar()
@@ -116,12 +121,8 @@ void MainWindow::setupCentralLayout()
     m_logPanel = new LogPanel;
     bottomTabs->addTab(m_logPanel, tr("Logs"));
 
-    auto *historyGroup = new QWidget;
-    auto *historyLayout = new QVBoxLayout(historyGroup);
-    m_historyPanel = new QLabel(tr("Run history will appear here."));
-    static_cast<QLabel *>(m_historyPanel)->setAlignment(Qt::AlignCenter);
-    historyLayout->addWidget(m_historyPanel);
-    bottomTabs->addTab(historyGroup, tr("Run History"));
+    m_historyPanel = new HistoryPanel;
+    bottomTabs->addTab(m_historyPanel, tr("Run History"));
     bottomTabs->setMinimumHeight(180);
 
     auto *mainSplitter = new QSplitter(Qt::Vertical);
@@ -144,7 +145,11 @@ void MainWindow::connectPipeline()
     connect(m_pipelineController, &PipelineController::stageCompleted, this, &MainWindow::onStageCompleted);
     connect(m_pipelineController, &PipelineController::progressUpdated, m_statusPanel, &StatusPanel::setProgress);
     connect(m_pipelineController, &PipelineController::logGenerated, m_logPanel, &LogPanel::appendLog);
-    connect(m_pipelineController, &PipelineController::runFinished, this, [this]() { onRunFinished(); });
+    connect(m_pipelineController, &PipelineController::runFinished, this, [this](const PipelineRun &run) {
+        m_historyService->saveRun(run);
+        m_historyPanel->addRun(run);
+        onRunFinished();
+    });
     connect(m_pipelineController, &PipelineController::runCanceled, this, &MainWindow::onRunCanceled);
 }
 
@@ -175,6 +180,8 @@ void MainWindow::onRunPipeline()
     m_statusPanel->startTimer();
     m_logPanel->clearLogs();
 
+    m_currentStudyId = study.studyId;
+    m_currentRunStart = QDateTime::currentDateTime();
     m_pipelineController->start(study.studyId, config);
 }
 
@@ -212,6 +219,16 @@ void MainWindow::onRunCanceled()
     m_statusPanel->stopTimer();
     m_statusPanel->setRunStatus("Canceled");
     statusBar()->showMessage(tr("Pipeline canceled."), 5000);
+
+    PipelineRun canceledRun;
+    canceledRun.runId = QString("RUN_CANCELED_%1").arg(QDateTime::currentDateTime().toString("hhmmss"));
+    canceledRun.studyId = m_currentStudyId;
+    canceledRun.startTime = m_currentRunStart;
+    canceledRun.endTime = QDateTime::currentDateTime();
+    canceledRun.status = "Canceled";
+    canceledRun.currentStage = "Canceled";
+    m_historyService->saveRun(canceledRun);
+    m_historyPanel->addRun(canceledRun);
 }
 
 void MainWindow::onReloadStudies()

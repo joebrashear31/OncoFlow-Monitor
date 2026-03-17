@@ -7,13 +7,16 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QAction>
+#include <QDateTime>
 #include <QWidget>
 
 class StudyListWidget;
 class ConfigPanel;
 class StatusPanel;
 class LogPanel;
+class HistoryPanel;
 class PipelineController;
+class HistoryService;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -45,10 +48,15 @@ private:
     ConfigPanel *m_configPanel = nullptr;
     StatusPanel *m_statusPanel = nullptr;
     LogPanel *m_logPanel = nullptr;
-    QWidget *m_historyPanel = nullptr;
+    HistoryPanel *m_historyPanel = nullptr;
 
     // Pipeline
     PipelineController *m_pipelineController = nullptr;
+    HistoryService *m_historyService = nullptr;
+
+    // Current run tracking
+    QString m_currentStudyId;
+    QDateTime m_currentRunStart;
 
     // Toolbar actions
     QAction *m_runAction = nullptr;
