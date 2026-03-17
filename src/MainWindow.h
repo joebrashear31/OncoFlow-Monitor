@@ -11,6 +11,7 @@
 
 class StudyListWidget;
 class ConfigPanel;
+class StatusPanel;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -33,7 +34,7 @@ private:
     // Panels
     StudyListWidget *m_studyListWidget = nullptr;
     ConfigPanel *m_configPanel = nullptr;
-    QWidget *m_statusPanel = nullptr;
+    StatusPanel *m_statusPanel = nullptr;
     QWidget *m_logPanel = nullptr;
     QWidget *m_historyPanel = nullptr;
 

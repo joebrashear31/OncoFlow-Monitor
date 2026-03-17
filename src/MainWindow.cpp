@@ -3,6 +3,7 @@
 #include "widgets/StudyListWidget.h"
 #include "widgets/ConfigPanel.h"
 #include "services/ValidationService.h"
+#include "widgets/StatusPanel.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -94,8 +95,7 @@ void MainWindow::setupCentralLayout()
     // --- Right panel: Run Status ---
     auto *statusGroup = new QGroupBox(tr("Run Status"));
     auto *statusLayout = new QVBoxLayout(statusGroup);
-    m_statusPanel = new QLabel(tr("Pipeline status will appear here."));
-    static_cast<QLabel *>(m_statusPanel)->setAlignment(Qt::AlignCenter);
+    m_statusPanel = new StatusPanel;
     statusLayout->addWidget(m_statusPanel);
     statusGroup->setMinimumWidth(260);
 
