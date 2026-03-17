@@ -1,10 +1,11 @@
 #include "MainWindow.h"
+#include "services/PipelineController.h"
 #include "services/StudyService.h"
-#include "widgets/StudyListWidget.h"
-#include "widgets/ConfigPanel.h"
 #include "services/ValidationService.h"
-#include "widgets/StatusPanel.h"
+#include "widgets/ConfigPanel.h"
 #include "widgets/LogPanel.h"
+#include "widgets/StatusPanel.h"
+#include "widgets/StudyListWidget.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -22,20 +23,21 @@ MainWindow::MainWindow(QWidget *parent)
     resize(1280, 800);
     setMinimumSize(900, 600);
 
+    m_pipelineController = new PipelineController(this);
+
     setupMenuBar();
     setupToolBar();
     setupCentralLayout();
     setupStatusBar();
+    connectPipeline();
     loadStudies();
 }
 
 void MainWindow::setupMenuBar()
 {
     auto *fileMenu = menuBar()->addMenu(tr("&File"));
-
     auto *reloadAction = fileMenu->addAction(tr("&Reload Studies"));
     connect(reloadAction, &QAction::triggered, this, &MainWindow::onReloadStudies);
-
     fileMenu->addSeparator();
     auto *exitAction = fileMenu->addAction(tr("E&xit"));
     exitAction->setShortcut(QKeySequence::Quit);
@@ -59,11 +61,13 @@ void MainWindow::setupToolBar()
     m_runAction = toolbar->addAction(tr("Run Pipeline"));
     m_runAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
     m_runAction->setToolTip(tr("Launch the pipeline for the selected study"));
+    connect(m_runAction, &QAction::triggered, this, &MainWindow::onRunPipeline);
 
     m_cancelAction = toolbar->addAction(tr("Cancel"));
     m_cancelAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Period));
     m_cancelAction->setToolTip(tr("Cancel the active pipeline run"));
     m_cancelAction->setEnabled(false);
+    connect(m_cancelAction, &QAction::triggered, this, &MainWindow::onCancelPipeline);
 
     toolbar->addSeparator();
 
@@ -71,12 +75,11 @@ void MainWindow::setupToolBar()
     m_reloadAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_L));
     m_reloadAction->setToolTip(tr("Reload mock studies from disk"));
     connect(m_reloadAction, &QAction::triggered, this, &MainWindow::onReloadStudies);
-    connect(m_runAction, &QAction::triggered, this, &MainWindow::onRunPipeline);
 }
 
 void MainWindow::setupCentralLayout()
 {
-    // --- Left panel: Study Selection ---
+    // Left: Study Selection
     auto *studyGroup = new QGroupBox(tr("Study Selection"));
     auto *studyLayout = new QVBoxLayout(studyGroup);
     m_studyListWidget = new StudyListWidget;
@@ -87,20 +90,19 @@ void MainWindow::setupCentralLayout()
         statusBar()->showMessage(tr("Selected: %1").arg(s.studyId), 3000);
     });
 
-    // --- Middle panel: Pipeline Configuration ---
+    // Middle: Config
     auto *configGroup = new QGroupBox(tr("Pipeline Configuration"));
     auto *configLayout = new QVBoxLayout(configGroup);
     m_configPanel = new ConfigPanel;
     configLayout->addWidget(m_configPanel);
 
-    // --- Right panel: Run Status ---
+    // Right: Status
     auto *statusGroup = new QGroupBox(tr("Run Status"));
     auto *statusLayout = new QVBoxLayout(statusGroup);
     m_statusPanel = new StatusPanel;
     statusLayout->addWidget(m_statusPanel);
     statusGroup->setMinimumWidth(260);
 
-    // Top row: study | config | status
     auto *topSplitter = new QSplitter(Qt::Horizontal);
     topSplitter->addWidget(studyGroup);
     topSplitter->addWidget(configGroup);
@@ -109,9 +111,8 @@ void MainWindow::setupCentralLayout()
     topSplitter->setStretchFactor(1, 2);
     topSplitter->setStretchFactor(2, 1);
 
-    // --- Bottom area: Logs + History as tabs ---
+    // Bottom: Logs + History tabs
     auto *bottomTabs = new QTabWidget;
-
     m_logPanel = new LogPanel;
     bottomTabs->addTab(m_logPanel, tr("Logs"));
 
@@ -121,22 +122,30 @@ void MainWindow::setupCentralLayout()
     static_cast<QLabel *>(m_historyPanel)->setAlignment(Qt::AlignCenter);
     historyLayout->addWidget(m_historyPanel);
     bottomTabs->addTab(historyGroup, tr("Run History"));
-
     bottomTabs->setMinimumHeight(180);
 
-    // Main vertical splitter: top row | bottom tabs
     auto *mainSplitter = new QSplitter(Qt::Vertical);
     mainSplitter->addWidget(topSplitter);
     mainSplitter->addWidget(bottomTabs);
     mainSplitter->setStretchFactor(0, 3);
     mainSplitter->setStretchFactor(1, 1);
-
     setCentralWidget(mainSplitter);
 }
 
 void MainWindow::setupStatusBar()
 {
     statusBar()->showMessage(tr("Ready"));
+}
+
+void MainWindow::connectPipeline()
+{
+    connect(m_pipelineController, &PipelineController::runningChanged, this, &MainWindow::onRunningChanged);
+    connect(m_pipelineController, &PipelineController::stageStarted, this, &MainWindow::onStageStarted);
+    connect(m_pipelineController, &PipelineController::stageCompleted, this, &MainWindow::onStageCompleted);
+    connect(m_pipelineController, &PipelineController::progressUpdated, m_statusPanel, &StatusPanel::setProgress);
+    connect(m_pipelineController, &PipelineController::logGenerated, m_logPanel, &LogPanel::appendLog);
+    connect(m_pipelineController, &PipelineController::runFinished, this, [this]() { onRunFinished(); });
+    connect(m_pipelineController, &PipelineController::runCanceled, this, &MainWindow::onRunCanceled);
 }
 
 void MainWindow::loadStudies()
@@ -160,8 +169,49 @@ void MainWindow::onRunPipeline()
         return;
     }
 
-    statusBar()->showMessage(tr("Pipeline launched for %1").arg(study.studyId), 3000);
-    // Pipeline execution will be wired in Phase 8
+    m_statusPanel->reset();
+    m_statusPanel->setStudyId(study.studyId);
+    m_statusPanel->setRunStatus("Running");
+    m_statusPanel->startTimer();
+    m_logPanel->clearLogs();
+
+    m_pipelineController->start(study.studyId, config);
+}
+
+void MainWindow::onCancelPipeline()
+{
+    m_pipelineController->cancel();
+}
+
+void MainWindow::onRunningChanged(bool running)
+{
+    m_runAction->setEnabled(!running);
+    m_cancelAction->setEnabled(running);
+}
+
+void MainWindow::onStageStarted(const QString &stage)
+{
+    m_statusPanel->setCurrentStage(stage);
+    m_statusPanel->setStageState(stage, "Active");
+}
+
+void MainWindow::onStageCompleted(const QString &stage)
+{
+    m_statusPanel->setStageState(stage, "Completed");
+}
+
+void MainWindow::onRunFinished()
+{
+    m_statusPanel->stopTimer();
+    m_statusPanel->setRunStatus("Completed");
+    statusBar()->showMessage(tr("Pipeline completed successfully."), 5000);
+}
+
+void MainWindow::onRunCanceled()
+{
+    m_statusPanel->stopTimer();
+    m_statusPanel->setRunStatus("Canceled");
+    statusBar()->showMessage(tr("Pipeline canceled."), 5000);
 }
 
 void MainWindow::onReloadStudies()
