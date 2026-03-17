@@ -12,6 +12,7 @@
 class StudyListWidget;
 class ConfigPanel;
 class StatusPanel;
+class LogPanel;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -35,7 +36,7 @@ private:
     StudyListWidget *m_studyListWidget = nullptr;
     ConfigPanel *m_configPanel = nullptr;
     StatusPanel *m_statusPanel = nullptr;
-    QWidget *m_logPanel = nullptr;
+    LogPanel *m_logPanel = nullptr;
     QWidget *m_historyPanel = nullptr;
 
     // Toolbar actions

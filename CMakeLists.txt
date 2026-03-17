@@ -17,6 +17,7 @@ set(SOURCES
     src/widgets/ConfigPanel.cpp
     src/services/ValidationService.cpp
     src/widgets/StatusPanel.cpp
+    src/widgets/LogPanel.cpp
 )
 
 set(HEADERS
@@ -30,6 +31,7 @@ set(HEADERS
     src/widgets/ConfigPanel.h
     src/services/ValidationService.h
     src/widgets/StatusPanel.h
+    src/widgets/LogPanel.h
 )
 
 add_executable(OncoFlowMonitor ${SOURCES} ${HEADERS})

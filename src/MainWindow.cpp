@@ -4,6 +4,7 @@
 #include "widgets/ConfigPanel.h"
 #include "services/ValidationService.h"
 #include "widgets/StatusPanel.h"
+#include "widgets/LogPanel.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -111,12 +112,8 @@ void MainWindow::setupCentralLayout()
     // --- Bottom area: Logs + History as tabs ---
     auto *bottomTabs = new QTabWidget;
 
-    auto *logGroup = new QWidget;
-    auto *logLayout = new QVBoxLayout(logGroup);
-    m_logPanel = new QLabel(tr("Live logs will appear here."));
-    static_cast<QLabel *>(m_logPanel)->setAlignment(Qt::AlignCenter);
-    logLayout->addWidget(m_logPanel);
-    bottomTabs->addTab(logGroup, tr("Logs"));
+    m_logPanel = new LogPanel;
+    bottomTabs->addTab(m_logPanel, tr("Logs"));
 
     auto *historyGroup = new QWidget;
     auto *historyLayout = new QVBoxLayout(historyGroup);
