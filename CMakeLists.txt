@@ -14,6 +14,7 @@ set(SOURCES
     src/MainWindow.cpp
     src/services/StudyService.cpp
     src/widgets/StudyListWidget.cpp
+    src/widgets/ConfigPanel.cpp
 )
 
 set(HEADERS
@@ -24,6 +25,7 @@ set(HEADERS
     src/models/LogEntry.h
     src/services/StudyService.h
     src/widgets/StudyListWidget.h
+    src/widgets/ConfigPanel.h
 )
 
 add_executable(OncoFlowMonitor ${SOURCES} ${HEADERS})

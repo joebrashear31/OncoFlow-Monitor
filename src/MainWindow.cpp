@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "services/StudyService.h"
 #include "widgets/StudyListWidget.h"
+#include "widgets/ConfigPanel.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -85,8 +86,7 @@ void MainWindow::setupCentralLayout()
     // --- Middle panel: Pipeline Configuration ---
     auto *configGroup = new QGroupBox(tr("Pipeline Configuration"));
     auto *configLayout = new QVBoxLayout(configGroup);
-    m_configPanel = new QLabel(tr("Configuration form will appear here."));
-    static_cast<QLabel *>(m_configPanel)->setAlignment(Qt::AlignCenter);
+    m_configPanel = new ConfigPanel;
     configLayout->addWidget(m_configPanel);
 
     // --- Right panel: Run Status ---

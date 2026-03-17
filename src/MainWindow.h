@@ -10,6 +10,7 @@
 #include <QWidget>
 
 class StudyListWidget;
+class ConfigPanel;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -30,7 +31,7 @@ private:
 
     // Panels
     StudyListWidget *m_studyListWidget = nullptr;
-    QWidget *m_configPanel = nullptr;
+    ConfigPanel *m_configPanel = nullptr;
     QWidget *m_statusPanel = nullptr;
     QWidget *m_logPanel = nullptr;
     QWidget *m_historyPanel = nullptr;
