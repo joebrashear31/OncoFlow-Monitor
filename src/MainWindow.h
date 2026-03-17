@@ -21,6 +21,7 @@ public:
 
 private slots:
     void onReloadStudies();
+    void onRunPipeline();
 
 private:
     void setupMenuBar();

@@ -2,6 +2,7 @@
 #include "services/StudyService.h"
 #include "widgets/StudyListWidget.h"
 #include "widgets/ConfigPanel.h"
+#include "services/ValidationService.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -68,6 +69,7 @@ void MainWindow::setupToolBar()
     m_reloadAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_L));
     m_reloadAction->setToolTip(tr("Reload mock studies from disk"));
     connect(m_reloadAction, &QAction::triggered, this, &MainWindow::onReloadStudies);
+    connect(m_runAction, &QAction::triggered, this, &MainWindow::onRunPipeline);
 }
 
 void MainWindow::setupCentralLayout()
@@ -147,6 +149,22 @@ void MainWindow::loadStudies()
     auto studies = service.loadStudies(path);
     m_studyListWidget->setStudies(studies);
     statusBar()->showMessage(tr("Loaded %1 studies.").arg(studies.size()), 3000);
+}
+
+void MainWindow::onRunPipeline()
+{
+    Study study = m_studyListWidget->hasSelection() ? m_studyListWidget->selectedStudy() : Study{};
+    PipelineConfig config = m_configPanel->currentConfig();
+
+    ValidationService validator;
+    QStringList errors = validator.validate(study, config);
+    if (!errors.isEmpty()) {
+        QMessageBox::warning(this, tr("Validation Failed"), errors.join("\n"));
+        return;
+    }
+
+    statusBar()->showMessage(tr("Pipeline launched for %1").arg(study.studyId), 3000);
+    // Pipeline execution will be wired in Phase 8
 }
 
 void MainWindow::onReloadStudies()
