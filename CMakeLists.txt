@@ -22,6 +22,7 @@ set(SOURCES
     src/services/PipelineWorker.cpp
     src/services/HistoryService.cpp
     src/widgets/HistoryPanel.cpp
+    src/widgets/RunSummaryDialog.cpp
 )
 
 set(HEADERS
@@ -40,6 +41,7 @@ set(HEADERS
     src/services/PipelineWorker.h
     src/services/HistoryService.h
     src/widgets/HistoryPanel.h
+    src/widgets/RunSummaryDialog.h
 )
 
 add_executable(OncoFlowMonitor ${SOURCES} ${HEADERS})

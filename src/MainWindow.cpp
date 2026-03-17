@@ -7,6 +7,7 @@
 #include "widgets/LogPanel.h"
 #include "widgets/StatusPanel.h"
 #include "widgets/HistoryPanel.h"
+#include "widgets/RunSummaryDialog.h"
 #include "widgets/StudyListWidget.h"
 
 #include <QApplication>
@@ -122,6 +123,11 @@ void MainWindow::setupCentralLayout()
     bottomTabs->addTab(m_logPanel, tr("Logs"));
 
     m_historyPanel = new HistoryPanel;
+    connect(m_historyPanel, &HistoryPanel::runSelected, this, [this](const PipelineRun &run) {
+        auto *dlg = new RunSummaryDialog(run, this);
+        dlg->setAttribute(Qt::WA_DeleteOnClose);
+        dlg->show();
+    });
     bottomTabs->addTab(m_historyPanel, tr("Run History"));
     bottomTabs->setMinimumHeight(180);
 
@@ -149,6 +155,9 @@ void MainWindow::connectPipeline()
         m_historyService->saveRun(run);
         m_historyPanel->addRun(run);
         onRunFinished();
+        auto *dlg = new RunSummaryDialog(run, this);
+        dlg->setAttribute(Qt::WA_DeleteOnClose);
+        dlg->show();
     });
     connect(m_pipelineController, &PipelineController::runCanceled, this, &MainWindow::onRunCanceled);
 }
