@@ -19,6 +19,7 @@
 #include <QTabWidget>
 #include <QVBoxLayout>
 
+// Window with all the widgets and controls for the OncoFlow Monitor application. It manages the main UI layout, connects signals and slots, and coordinates interactions between the different components.
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
