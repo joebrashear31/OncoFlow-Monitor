@@ -1,0 +1,69 @@
+        -:    0:Source:/opt/homebrew/lib/QtCore.framework/Headers/qcontainerfwd.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// Copyright (C) 2020 The Qt Company Ltd.
+        -:    2:// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+        -:    3:
+        -:    4:#ifndef QCONTAINERFWD_H
+        -:    5:#define QCONTAINERFWD_H
+        -:    6:
+        -:    7:#include <QtCore/qtconfigmacros.h>
+        -:    8:#include <QtCore/qtypes.h>
+        -:    9:
+        -:   10:#if 0
+        -:   11:#pragma qt_class(QtContainerFwd)
+        -:   12:#endif
+        -:   13:
+        -:   14:// std headers can unfortunately not be forward declared
+        -:   15:#include <cstddef> // std::size_t
+        -:   16:#include <utility>
+        -:   17:#include <limits>
+        -:   18:
+        -:   19:QT_BEGIN_NAMESPACE
+        -:   20:
+        -:   21:template <typename Key, typename T> class QCache;
+        -:   22:template <typename Key, typename T> class QHash;
+        -:   23:template <typename Key, typename T> class QMap;
+        -:   24:template <typename Key, typename T> class QMultiHash;
+        -:   25:template <typename Key, typename T> class QMultiMap;
+        -:   26:#ifndef QT_NO_QPAIR
+        -:   27:template <typename T1, typename T2>
+        -:   28:using QPair = std::pair<T1, T2>;
+        -:   29:#endif
+        -:   30:template <typename T> class QQueue;
+        -:   31:template <typename T> class QSet;
+        -:   32:template <typename T, std::size_t E = std::size_t(-1) /* = std::dynamic_extent*/> class QSpan;
+        -:   33:template <typename T> class QStack;
+        -:   34:constexpr qsizetype QVarLengthArrayDefaultPrealloc = 256;
+        -:   35:template <typename T, qsizetype Prealloc = QVarLengthArrayDefaultPrealloc> class QVarLengthArray;
+        -:   36:template <typename T> class QList;
+        -:   37:class QString;
+        -:   38:#ifndef Q_QDOC
+        -:   39:template<typename T> using QVector = QList<T>;
+        -:   40:using QStringList = QList<QString>;
+        -:   41:class QByteArray;
+        -:   42:using QByteArrayList = QList<QByteArray>;
+        -:   43:#else
+        -:   44:template<typename T> class QVector;
+        -:   45:class QStringList;
+        -:   46:class QByteArrayList;
+        -:   47:#endif
+        -:   48:class QMetaType;
+        -:   49:class QVariant;
+        -:   50:
+        -:   51:using QVariantList = QList<QVariant>;
+        -:   52:using QVariantMap = QMap<QString, QVariant>;
+        -:   53:using QVariantHash = QHash<QString, QVariant>;
+        -:   54:using QVariantPair = std::pair<QVariant, QVariant>;
+        -:   55:
+        -:   56:namespace QtPrivate
+        -:   57:{
+        -:   58:[[maybe_unused]]
+        -:   59:constexpr qsizetype MaxAllocSize = (std::numeric_limits<qsizetype>::max)();
+        -:   60:}
+        -:   61:
+        -:   62:QT_END_NAMESPACE
+        -:   63:
+        -:   64:#endif // QCONTAINERFWD_H

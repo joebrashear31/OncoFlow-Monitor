@@ -1,0 +1,102 @@
+        -:    0:Source:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/access.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// -*- C++ -*-
+        -:    2://===----------------------------------------------------------------------===//
+        -:    3://
+        -:    4:// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+        -:    5:// See https://llvm.org/LICENSE.txt for license information.
+        -:    6:// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+        -:    7://
+        -:    8://===----------------------------------------------------------------------===//
+        -:    9:
+        -:   10:#ifndef _LIBCPP___ITERATOR_ACCESS_H
+        -:   11:#define _LIBCPP___ITERATOR_ACCESS_H
+        -:   12:
+        -:   13:#include <__config>
+        -:   14:#include <cstddef>
+        -:   15:
+        -:   16:#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+        -:   17:#  pragma GCC system_header
+        -:   18:#endif
+        -:   19:
+        -:   20:_LIBCPP_BEGIN_NAMESPACE_STD
+        -:   21:
+        -:   22:template <class _Tp, size_t _Np>
+        -:   23:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR _Tp* begin(_Tp (&__array)[_Np]) _NOEXCEPT {
+        -:   24:  return __array;
+        -:   25:}
+        -:   26:
+        -:   27:template <class _Tp, size_t _Np>
+        -:   28:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR _Tp* end(_Tp (&__array)[_Np]) _NOEXCEPT {
+        -:   29:  return __array + _Np;
+        -:   30:}
+        -:   31:
+        -:   32:#if !defined(_LIBCPP_CXX03_LANG)
+        -:   33:
+        -:   34:template <class _Cp>
+        -:   35:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 auto begin(_Cp& __c) -> decltype(__c.begin()) {
+        -:   36:  return __c.begin();
+        -:   37:}
+        -:   38:
+        -:   39:template <class _Cp>
+function _ZNSt3__15beginB8ne190102I17QArrayDataPointerI7QStringEEEDTcldtfp_5beginEERKT_ called 0 returned 0% blocks executed 0%
+    #####:   40:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 auto begin(const _Cp& __c) -> decltype(__c.begin()) {
+    #####:   41:  return __c.begin();
+        -:   42:}
+        -:   43:
+        -:   44:template <class _Cp>
+        -:   45:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 auto end(_Cp& __c) -> decltype(__c.end()) {
+        -:   46:  return __c.end();
+        -:   47:}
+        -:   48:
+        -:   49:template <class _Cp>
+function _ZNSt3__13endB8ne190102I17QArrayDataPointerI7QStringEEEDTcldtfp_3endEERKT_ called 0 returned 0% blocks executed 0%
+    #####:   50:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 auto end(const _Cp& __c) -> decltype(__c.end()) {
+    #####:   51:  return __c.end();
+        -:   52:}
+        -:   53:
+        -:   54:#  if _LIBCPP_STD_VER >= 14
+        -:   55:
+        -:   56:template <class _Cp>
+        -:   57:_LIBCPP_HIDE_FROM_ABI constexpr auto
+        -:   58:cbegin(const _Cp& __c) noexcept(noexcept(std::begin(__c))) -> decltype(std::begin(__c)) {
+        -:   59:  return std::begin(__c);
+        -:   60:}
+        -:   61:
+        -:   62:template <class _Cp>
+        -:   63:_LIBCPP_HIDE_FROM_ABI constexpr auto cend(const _Cp& __c) noexcept(noexcept(std::end(__c))) -> decltype(std::end(__c)) {
+        -:   64:  return std::end(__c);
+        -:   65:}
+        -:   66:
+        -:   67:#  endif
+        -:   68:
+        -:   69:#else // defined(_LIBCPP_CXX03_LANG)
+        -:   70:
+        -:   71:template <class _Cp>
+        -:   72:_LIBCPP_HIDE_FROM_ABI typename _Cp::iterator begin(_Cp& __c) {
+        -:   73:  return __c.begin();
+        -:   74:}
+        -:   75:
+        -:   76:template <class _Cp>
+        -:   77:_LIBCPP_HIDE_FROM_ABI typename _Cp::const_iterator begin(const _Cp& __c) {
+        -:   78:  return __c.begin();
+        -:   79:}
+        -:   80:
+        -:   81:template <class _Cp>
+        -:   82:_LIBCPP_HIDE_FROM_ABI typename _Cp::iterator end(_Cp& __c) {
+        -:   83:  return __c.end();
+        -:   84:}
+        -:   85:
+        -:   86:template <class _Cp>
+        -:   87:_LIBCPP_HIDE_FROM_ABI typename _Cp::const_iterator end(const _Cp& __c) {
+        -:   88:  return __c.end();
+        -:   89:}
+        -:   90:
+        -:   91:#endif // !defined(_LIBCPP_CXX03_LANG)
+        -:   92:
+        -:   93:_LIBCPP_END_NAMESPACE_STD
+        -:   94:
+        -:   95:#endif // _LIBCPP___ITERATOR_ACCESS_H

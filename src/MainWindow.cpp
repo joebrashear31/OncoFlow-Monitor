@@ -9,6 +9,7 @@
 #include "widgets/HistoryPanel.h"
 #include "widgets/RunSummaryDialog.h"
 #include "widgets/StudyListWidget.h"
+#include "widgets/FrameViewer.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -104,20 +105,35 @@ void MainWindow::setupCentralLayout()
     m_configPanel = new ConfigPanel;
     configLayout->addWidget(m_configPanel);
 
-    // Right: Status
+    // Top Right: Frame Viewer
+    auto *frameGroup = new QGroupBox(tr("Frame Viewer"));
+    auto *frameLayout = new QVBoxLayout(frameGroup);
+    m_frameViewer = new FrameViewer;
+    frameLayout->addWidget(m_frameViewer);
+    
+    //  Bottom Right: Status
     auto *statusGroup = new QGroupBox(tr("Run Status"));
     auto *statusLayout = new QVBoxLayout(statusGroup);
     m_statusPanel = new StatusPanel;
     statusLayout->addWidget(m_statusPanel);
     statusGroup->setMinimumWidth(260);
 
-    auto *topSplitter = new QSplitter(Qt::Horizontal);
-    topSplitter->addWidget(studyGroup);
-    topSplitter->addWidget(configGroup);
-    topSplitter->addWidget(statusGroup);
-    topSplitter->setStretchFactor(0, 1);
-    topSplitter->setStretchFactor(1, 2);
-    topSplitter->setStretchFactor(2, 1);
+    // Right side: Frame Viewer on top, Status below
+    auto *rightSplitter = new QSplitter(Qt::Vertical);
+    rightSplitter->addWidget(frameGroup);
+    rightSplitter->addWidget(statusGroup);
+    rightSplitter->setStretchFactor(0, 3);
+    rightSplitter->setStretchFactor(1, 1);
+    rightSplitter->setChildrenCollapsible(false);
+
+    // Top row: left / middle / right
+    auto *topRowSplitter = new QSplitter(Qt::Horizontal);
+    topRowSplitter->addWidget(studyGroup);
+    topRowSplitter->addWidget(configGroup);
+    topRowSplitter->addWidget(rightSplitter);
+    topRowSplitter->setStretchFactor(0, 1);
+    topRowSplitter->setStretchFactor(1, 2);
+    topRowSplitter->setStretchFactor(2, 2);
 
     // Bottom: Logs + History tabs
     auto *bottomTabs = new QTabWidget;
@@ -134,7 +150,7 @@ void MainWindow::setupCentralLayout()
     bottomTabs->setMinimumHeight(180);
 
     auto *mainSplitter = new QSplitter(Qt::Vertical);
-    mainSplitter->addWidget(topSplitter);
+    mainSplitter->addWidget(topRowSplitter);
     mainSplitter->addWidget(bottomTabs);
     mainSplitter->setStretchFactor(0, 3);
     mainSplitter->setStretchFactor(1, 1);

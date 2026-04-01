@@ -1,0 +1,231 @@
+        -:    0:Source:/Users/joebrashear/Desktop/OncoFlow-Monitor/src/widgets/FrameViewer.cpp
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "FrameViewer.h"
+        -:    2:#include "services/FrameSource.h"
+        -:    3:
+        -:    4:#include <QFileDialog>
+        -:    5:#include <QHBoxLayout>
+        -:    6:#include <QLabel>
+        -:    7:#include <QMediaPlayer>
+        -:    8:#include <QPixmap>
+        -:    9:#include <QPushButton>
+        -:   10:#include <QResizeEvent>
+        -:   11:#include <QTimer>
+        -:   12:#include <QUrl>
+        -:   13:#include <QVBoxLayout>
+        -:   14:#include <QVideoFrame>
+        -:   15:#include <QVideoSink>
+        -:   16:
+        -:   17:static constexpr int kPlaybackIntervalMs = 100; // ~10 fps for image sequences
+        -:   18:
+    #####:   19:static QString formatMs(qint64 ms)
+        -:   20:{
+    #####:   21:    qint64 s = ms / 1000;
+    #####:   22:    return QString("%1:%2").arg(s / 60, 2, 10, QChar('0')).arg(s % 60, 2, 10, QChar('0'));
+    #####:   23:}
+        -:   24:
+       66:   25:FrameViewer::FrameViewer(QWidget *parent)
+       22:   26:    : QWidget(parent)
+       22:   27:    , m_imageLabel(new QLabel(this))
+       22:   28:    , m_loadFolderBtn(new QPushButton(tr("Load Folder"), this))
+       22:   29:    , m_loadVideoBtn(new QPushButton(tr("Load Video"), this))
+       22:   30:    , m_playBtn(new QPushButton(tr("Play"), this))
+       22:   31:    , m_frameInfo(new QLabel(tr("No frames"), this))
+       22:   32:    , m_timer(new QTimer(this))
+       22:   33:    , m_source(new FrameSource)
+        -:   34:    , m_player(new QMediaPlayer(this))
+        -:   35:    , m_videoSink(new QVideoSink(this))
+       44:   36:{
+       22:   37:    m_imageLabel->setAlignment(Qt::AlignCenter);
+       22:   38:    m_imageLabel->setMinimumSize(280, 200);
+       22:   39:    m_imageLabel->setText("No frame loaded");
+       22:   40:    m_imageLabel->setStyleSheet("background: #111; color: #666;");
+        -:   41:
+       22:   42:    m_playBtn->setEnabled(false);
+       22:   43:    m_frameInfo->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        -:   44:
+       22:   45:    auto *controls = new QHBoxLayout;
+       22:   46:    controls->addWidget(m_loadFolderBtn);
+       22:   47:    controls->addWidget(m_loadVideoBtn);
+       22:   48:    controls->addWidget(m_playBtn);
+       22:   49:    controls->addStretch();
+       22:   50:    controls->addWidget(m_frameInfo);
+        -:   51:
+       22:   52:    auto *layout = new QVBoxLayout(this);
+       22:   53:    layout->setContentsMargins(0, 0, 0, 0);
+       22:   54:    layout->addWidget(m_imageLabel, 1);
+       22:   55:    layout->addLayout(controls);
+       22:   56:    setLayout(layout);
+        -:   57:
+       22:   58:    m_player->setVideoOutput(m_videoSink);
+        -:   59:
+       22:   60:    connect(m_loadFolderBtn, &QPushButton::clicked, this, &FrameViewer::onLoadFolderClicked);
+       22:   61:    connect(m_loadVideoBtn,  &QPushButton::clicked, this, &FrameViewer::onLoadVideoClicked);
+       22:   62:    connect(m_playBtn,       &QPushButton::clicked, this, &FrameViewer::onPlayPauseClicked);
+       22:   63:    connect(m_timer,         &QTimer::timeout,      this, &FrameViewer::onNextFrame);
+        -:   64:
+       44:   65:    connect(m_videoSink, &QVideoSink::videoFrameChanged, this,
+       22:   66:        [this](const QVideoFrame &frame) {
+    #####:   67:            QImage img = frame.toImage();
+    #####:   68:            if (!img.isNull())
+    #####:   69:                setFrame(img);
+    #####:   70:        }, Qt::QueuedConnection);
+        -:   71:
+       44:   72:    connect(m_player, &QMediaPlayer::playbackStateChanged, this,
+       22:   73:        [this](QMediaPlayer::PlaybackState) { updateControls(); });
+        -:   74:
+       44:   75:    connect(m_player, &QMediaPlayer::durationChanged, this,
+       22:   76:        [this](qint64) { updateControls(); });
+        -:   77:
+       44:   78:    connect(m_player, &QMediaPlayer::positionChanged, this,
+       22:   79:        [this](qint64) { updateControls(); });
+       22:   80:}
+        -:   81:
+       44:   82:FrameViewer::~FrameViewer()
+       44:   83:{
+       22:   84:    delete m_source;
+       44:   85:}
+        -:   86:
+       13:   87:void FrameViewer::setFrame(const QImage &image)
+        -:   88:{
+       13:   89:    m_currentImage = image;
+       13:   90:    updatePixmap();
+       13:   91:}
+        -:   92:
+        6:   93:void FrameViewer::clearFrame()
+        -:   94:{
+        6:   95:    m_currentImage = QImage();
+        6:   96:    m_imageLabel->setText("No frame loaded");
+        6:   97:    m_imageLabel->setPixmap(QPixmap());
+        6:   98:}
+        -:   99:
+       13:  100:bool FrameViewer::loadFolder(const QString &folderPath)
+        -:  101:{
+       13:  102:    stop();
+       13:  103:    m_videoMode    = false;
+       13:  104:    m_currentIndex = 0;
+        -:  105:
+       13:  106:    if (!m_source->loadFromFolder(folderPath))
+        3:  107:        return false;
+        -:  108:
+       10:  109:    setFrame(m_source->getFrame(0));
+       10:  110:    m_playBtn->setEnabled(true);
+       10:  111:    updateControls();
+       10:  112:    return true;
+       13:  113:}
+        -:  114:
+        1:  115:bool FrameViewer::loadVideo(const QString &filePath)
+        -:  116:{
+        1:  117:    stop();
+        1:  118:    m_videoMode = true;
+        -:  119:
+        1:  120:    m_player->setSource(QUrl::fromLocalFile(filePath));
+        1:  121:    m_playBtn->setEnabled(true);
+        1:  122:    updateControls();
+        1:  123:    return true;
+    #####:  124:}
+        -:  125:
+        9:  126:void FrameViewer::play()
+        -:  127:{
+        9:  128:    if (m_videoMode)
+    #####:  129:        m_player->play();
+        9:  130:    else if (m_source->isLoaded())
+        8:  131:        m_timer->start(kPlaybackIntervalMs);
+        -:  132:
+        9:  133:    updateControls();
+        9:  134:}
+        -:  135:
+       21:  136:void FrameViewer::stop()
+        -:  137:{
+       21:  138:    if (m_videoMode)
+    #####:  139:        m_player->pause();
+        -:  140:    else
+       21:  141:        m_timer->stop();
+        -:  142:
+       21:  143:    updateControls();
+       21:  144:}
+        -:  145:
+       48:  146:bool FrameViewer::isPlaying() const
+        -:  147:{
+       48:  148:    if (m_videoMode)
+        1:  149:        return m_player->playbackState() == QMediaPlayer::PlayingState;
+       47:  150:    return m_timer->isActive();
+       48:  151:}
+        -:  152:
+    #####:  153:void FrameViewer::resizeEvent(QResizeEvent *event)
+        -:  154:{
+    #####:  155:    QWidget::resizeEvent(event);
+    #####:  156:    if (!m_currentImage.isNull())
+    #####:  157:        updatePixmap();
+    #####:  158:}
+        -:  159:
+    #####:  160:void FrameViewer::onNextFrame()
+        -:  161:{
+    #####:  162:    if (!m_source->isLoaded()) return;
+    #####:  163:    m_currentIndex = (m_currentIndex + 1) % m_source->frameCount();
+    #####:  164:    setFrame(m_source->getFrame(m_currentIndex));
+    #####:  165:    updateControls();
+    #####:  166:}
+        -:  167:
+    #####:  168:void FrameViewer::onLoadFolderClicked()
+        -:  169:{
+    #####:  170:    const QString folder = QFileDialog::getExistingDirectory(
+    #####:  171:        this, tr("Select Frame Folder"), QString());
+    #####:  172:    if (folder.isEmpty()) return;
+        -:  173:
+    #####:  174:    if (!loadFolder(folder))
+    #####:  175:        m_imageLabel->setText("No supported images found in folder");
+    #####:  176:}
+        -:  177:
+    #####:  178:void FrameViewer::onLoadVideoClicked()
+        -:  179:{
+    #####:  180:    const QString file = QFileDialog::getOpenFileName(
+    #####:  181:        this, tr("Open Video File"), QString(),
+    #####:  182:        tr("Video Files (*.mp4 *.mov *.avi *.mkv *.m4v);;All Files (*)"));
+    #####:  183:    if (file.isEmpty()) return;
+        -:  184:
+    #####:  185:    loadVideo(file);
+    #####:  186:}
+        -:  187:
+    #####:  188:void FrameViewer::onPlayPauseClicked()
+        -:  189:{
+    #####:  190:    isPlaying() ? stop() : play();
+    #####:  191:}
+        -:  192:
+       13:  193:void FrameViewer::updatePixmap()
+        -:  194:{
+       13:  195:    if (m_currentImage.isNull())
+        -:  196:    {
+        1:  197:        m_imageLabel->setText("No frame loaded");
+        1:  198:        return;
+        -:  199:    }
+       12:  200:    m_imageLabel->setText("");
+       12:  201:    QPixmap pixmap = QPixmap::fromImage(m_currentImage);
+       24:  202:    m_imageLabel->setPixmap(
+       12:  203:        pixmap.scaled(m_imageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+       13:  204:}
+        -:  205:
+       41:  206:void FrameViewer::updateControls()
+        -:  207:{
+       41:  208:    m_playBtn->setText(isPlaying() ? tr("Pause") : tr("Play"));
+        -:  209:
+       41:  210:    if (m_videoMode)
+        -:  211:    {
+        1:  212:        qint64 pos = m_player->position();
+        1:  213:        qint64 dur = m_player->duration();
+        2:  214:        m_frameInfo->setText(dur > 0
+    #####:  215:            ? QString("%1 / %2").arg(formatMs(pos), formatMs(dur))
+        1:  216:            : tr("Loading..."));
+        1:  217:    }
+       40:  218:    else if (m_source->isLoaded())
+        -:  219:    {
+       26:  220:        m_frameInfo->setText(tr("%1 / %2").arg(m_currentIndex + 1).arg(m_source->frameCount()));
+       26:  221:    }
+        -:  222:    else
+        -:  223:    {
+       14:  224:        m_frameInfo->setText(tr("No frames"));
+        -:  225:    }
+       41:  226:}

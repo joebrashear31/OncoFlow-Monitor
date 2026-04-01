@@ -1,0 +1,444 @@
+        -:    0:Source:/opt/homebrew/lib/QtCore.framework/Headers/qsize.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// Copyright (C) 2022 The Qt Company Ltd.
+        -:    2:// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+        -:    3:
+        -:    4:#ifndef QSIZE_H
+        -:    5:#define QSIZE_H
+        -:    6:
+        -:    7:#include <QtCore/qcheckedint_impl.h>
+        -:    8:#include <QtCore/qnamespace.h>
+        -:    9:#include <QtCore/qhashfunctions.h>
+        -:   10:#include <QtCore/qmargins.h>
+        -:   11:
+        -:   12:#include <QtCore/q20type_traits.h>
+        -:   13:#include <QtCore/q23utility.h>
+        -:   14:
+        -:   15:#if defined(Q_OS_DARWIN) || defined(Q_QDOC)
+        -:   16:struct CGSize;
+        -:   17:#endif
+        -:   18:
+        -:   19:QT_BEGIN_NAMESPACE
+        -:   20:
+        -:   21:// QT_ENABLE_P0846_SEMANTICS_FOR(get) // from qmargins.h
+        -:   22:
+        -:   23:class QSizeF;
+        -:   24:
+        -:   25:class Q_CORE_EXPORT QSize
+        -:   26:{
+        -:   27:public:
+        -:   28:    constexpr QSize() noexcept;
+        -:   29:    constexpr QSize(int w, int h) noexcept;
+        -:   30:
+        -:   31:    constexpr inline bool isNull() const noexcept;
+        -:   32:    constexpr inline bool isEmpty() const noexcept;
+        -:   33:    constexpr inline bool isValid() const noexcept;
+        -:   34:
+        -:   35:    constexpr inline int width() const noexcept;
+        -:   36:    constexpr inline int height() const noexcept;
+        -:   37:    constexpr inline void setWidth(int w) noexcept;
+        -:   38:    constexpr inline void setHeight(int h) noexcept;
+        -:   39:    void transpose() noexcept;
+        -:   40:    [[nodiscard]] constexpr inline QSize transposed() const noexcept;
+        -:   41:
+        -:   42:    inline void scale(int w, int h, Qt::AspectRatioMode mode) noexcept;
+        -:   43:    inline void scale(const QSize &s, Qt::AspectRatioMode mode) noexcept;
+        -:   44:    [[nodiscard]] QSize scaled(int w, int h, Qt::AspectRatioMode mode) const noexcept;
+        -:   45:    [[nodiscard]] QSize scaled(const QSize &s, Qt::AspectRatioMode mode) const noexcept;
+        -:   46:
+        -:   47:    [[nodiscard]] constexpr inline QSize expandedTo(const QSize &) const noexcept;
+        -:   48:    [[nodiscard]] constexpr inline QSize boundedTo(const QSize &) const noexcept;
+        -:   49:
+        -:   50:    [[nodiscard]] constexpr QSize grownBy(QMargins m) const noexcept
+        -:   51:    { return {wd + m.left() + m.right(), ht + m.top() + m.bottom()}; }
+        -:   52:    [[nodiscard]] constexpr QSize shrunkBy(QMargins m) const noexcept
+        -:   53:    { return {wd - m.left() - m.right(), ht - m.top() - m.bottom()}; }
+        -:   54:
+        -:   55:    constexpr inline int &rwidth() noexcept;
+        -:   56:    constexpr inline int &rheight() noexcept;
+        -:   57:
+        -:   58:    constexpr inline QSize &operator+=(const QSize &) noexcept;
+        -:   59:    constexpr inline QSize &operator-=(const QSize &) noexcept;
+        -:   60:    constexpr inline QSize &operator*=(qreal c) noexcept;
+        -:   61:    inline QSize &operator/=(qreal c);
+        -:   62:
+        -:   63:private:
+        -:   64:    friend constexpr bool comparesEqual(const QSize &s1, const QSize &s2) noexcept
+        -:   65:    { return s1.wd == s2.wd && s1.ht == s2.ht; }
+        -:   66:    Q_DECLARE_EQUALITY_COMPARABLE_LITERAL_TYPE(QSize)
+        -:   67:    friend inline constexpr QSize operator+(const QSize &s1, const QSize &s2) noexcept
+        -:   68:    { return QSize(s1.wd + s2.wd, s1.ht + s2.ht); }
+        -:   69:    friend inline constexpr QSize operator-(const QSize &s1, const QSize &s2) noexcept
+        -:   70:    { return QSize(s1.wd - s2.wd, s1.ht - s2.ht); }
+        -:   71:    friend inline constexpr QSize operator*(const QSize &s, qreal c) noexcept
+        -:   72:    { return QSize(QtPrivate::qSaturateRound(s.width() * c), QtPrivate::qSaturateRound(s.height() * c)); }
+        -:   73:    friend inline constexpr QSize operator*(qreal c, const QSize &s) noexcept
+        -:   74:    { return s * c; }
+        -:   75:    friend inline QSize operator/(const QSize &s, qreal c)
+        -:   76:    {
+        -:   77:        Q_ASSERT(!qFuzzyIsNull(c));
+        -:   78:        return QSize(QtPrivate::qSaturateRound(s.width() / c), QtPrivate::qSaturateRound(s.height() / c));
+        -:   79:    }
+        -:   80:    friend inline constexpr size_t qHash(const QSize &, size_t) noexcept;
+        -:   81:
+        -:   82:public:
+        -:   83:#if defined(Q_OS_DARWIN) || defined(Q_QDOC)
+        -:   84:    [[nodiscard]] CGSize toCGSize() const noexcept;
+        -:   85:#endif
+        -:   86:
+        -:   87:    [[nodiscard]] inline constexpr QSizeF toSizeF() const noexcept;
+        -:   88:
+        -:   89:private:
+        -:   90:    using Representation = QtPrivate::QCheckedIntegers::QCheckedInt<int>;
+        -:   91:
+        -:   92:    constexpr QSize(Representation w, Representation h) noexcept
+        -:   93:        : wd(w), ht(h)
+        -:   94:    {}
+        -:   95:
+        -:   96:    Representation wd;
+        -:   97:    Representation ht;
+        -:   98:
+        -:   99:    template <std::size_t I,
+        -:  100:              typename S,
+        -:  101:              std::enable_if_t<(I < 2), bool> = true,
+        -:  102:              std::enable_if_t<std::is_same_v<q20::remove_cvref_t<S>, QSize>, bool> = true>
+        -:  103:    friend constexpr decltype(auto) get(S &&s) noexcept
+        -:  104:    {
+        -:  105:        if constexpr (I == 0)
+        -:  106:            return q23::forward_like<S>(s.wd).as_underlying();
+        -:  107:        else if constexpr (I == 1)
+        -:  108:            return q23::forward_like<S>(s.ht).as_underlying();
+        -:  109:    }
+        -:  110:};
+        -:  111:Q_DECLARE_TYPEINFO(QSize, Q_RELOCATABLE_TYPE);
+        -:  112:
+        -:  113:/*****************************************************************************
+        -:  114:  QSize stream functions
+        -:  115: *****************************************************************************/
+        -:  116:
+        -:  117:#ifndef QT_NO_DATASTREAM
+        -:  118:Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QSize &);
+        -:  119:Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QSize &);
+        -:  120:#endif
+        -:  121:
+        -:  122:
+        -:  123:/*****************************************************************************
+        -:  124:  QSize inline functions
+        -:  125: *****************************************************************************/
+        -:  126:
+        -:  127:constexpr inline QSize::QSize() noexcept : wd(-1), ht(-1) {}
+        -:  128:
+       24:  129:constexpr inline QSize::QSize(int w, int h) noexcept : wd(w), ht(h) {}
+        -:  130:
+        -:  131:constexpr inline bool QSize::isNull() const noexcept
+        -:  132:{ return wd == 0 && ht == 0; }
+        -:  133:
+        -:  134:constexpr inline bool QSize::isEmpty() const noexcept
+        -:  135:{ return wd < 1 || ht < 1; }
+        -:  136:
+        -:  137:constexpr inline bool QSize::isValid() const noexcept
+        -:  138:{ return wd >= 0 && ht >= 0; }
+        -:  139:
+        -:  140:constexpr inline int QSize::width() const noexcept
+        -:  141:{ return wd.value(); }
+        -:  142:
+        -:  143:constexpr inline int QSize::height() const noexcept
+        -:  144:{ return ht.value(); }
+        -:  145:
+        -:  146:constexpr inline void QSize::setWidth(int w) noexcept
+        -:  147:{ wd.setValue(w); }
+        -:  148:
+        -:  149:constexpr inline void QSize::setHeight(int h) noexcept
+        -:  150:{ ht.setValue(h); }
+        -:  151:
+        -:  152:constexpr inline QSize QSize::transposed() const noexcept
+        -:  153:{ return QSize(ht, wd); }
+        -:  154:
+        -:  155:inline void QSize::scale(int w, int h, Qt::AspectRatioMode mode) noexcept
+        -:  156:{ scale(QSize(w, h), mode); }
+        -:  157:
+        -:  158:inline void QSize::scale(const QSize &s, Qt::AspectRatioMode mode) noexcept
+        -:  159:{ *this = scaled(s, mode); }
+        -:  160:
+        -:  161:inline QSize QSize::scaled(int w, int h, Qt::AspectRatioMode mode) const noexcept
+        -:  162:{ return scaled(QSize(w, h), mode); }
+        -:  163:
+        -:  164:constexpr inline int &QSize::rwidth() noexcept
+        -:  165:{ return wd.as_underlying(); }
+        -:  166:
+        -:  167:constexpr inline int &QSize::rheight() noexcept
+        -:  168:{ return ht.as_underlying(); }
+        -:  169:
+        -:  170:constexpr inline QSize &QSize::operator+=(const QSize &s) noexcept
+        -:  171:{
+        -:  172:    wd += s.wd;
+        -:  173:    ht += s.ht;
+        -:  174:    return *this;
+        -:  175:}
+        -:  176:
+        -:  177:constexpr inline QSize &QSize::operator-=(const QSize &s) noexcept
+        -:  178:{
+        -:  179:    wd -= s.wd;
+        -:  180:    ht -= s.ht;
+        -:  181:    return *this;
+        -:  182:}
+        -:  183:
+        -:  184:constexpr inline QSize &QSize::operator*=(qreal c) noexcept
+        -:  185:{
+        -:  186:    wd.setValue(QtPrivate::qSaturateRound(width() * c));
+        -:  187:    ht.setValue(QtPrivate::qSaturateRound(height() * c));
+        -:  188:    return *this;
+        -:  189:}
+        -:  190:
+        -:  191:constexpr inline size_t qHash(const QSize &s, size_t seed = 0) noexcept
+        -:  192:{ return qHashMulti(seed, s.width(), s.height()); }
+        -:  193:
+        -:  194:inline QSize &QSize::operator/=(qreal c)
+        -:  195:{
+        -:  196:    Q_ASSERT(!qFuzzyIsNull(c));
+        -:  197:    wd.setValue(QtPrivate::qSaturateRound(width() / c));
+        -:  198:    ht.setValue(QtPrivate::qSaturateRound(height() / c));
+        -:  199:    return *this;
+        -:  200:}
+        -:  201:
+        -:  202:constexpr inline QSize QSize::expandedTo(const QSize & otherSize) const noexcept
+        -:  203:{
+        -:  204:    return QSize(qMax(wd,otherSize.wd), qMax(ht,otherSize.ht));
+        -:  205:}
+        -:  206:
+        -:  207:constexpr inline QSize QSize::boundedTo(const QSize & otherSize) const noexcept
+        -:  208:{
+        -:  209:    return QSize(qMin(wd,otherSize.wd), qMin(ht,otherSize.ht));
+        -:  210:}
+        -:  211:
+        -:  212:#ifndef QT_NO_DEBUG_STREAM
+        -:  213:Q_CORE_EXPORT QDebug operator<<(QDebug, const QSize &);
+        -:  214:#endif
+        -:  215:
+        -:  216:
+        -:  217:class Q_CORE_EXPORT QSizeF
+        -:  218:{
+        -:  219:public:
+        -:  220:    constexpr QSizeF() noexcept;
+        -:  221:    constexpr QSizeF(const QSize &sz) noexcept;
+        -:  222:    constexpr QSizeF(qreal w, qreal h) noexcept;
+        -:  223:
+        -:  224:    inline bool isNull() const noexcept;
+        -:  225:    constexpr inline bool isEmpty() const noexcept;
+        -:  226:    constexpr inline bool isValid() const noexcept;
+        -:  227:
+        -:  228:    constexpr inline qreal width() const noexcept;
+        -:  229:    constexpr inline qreal height() const noexcept;
+        -:  230:    constexpr inline void setWidth(qreal w) noexcept;
+        -:  231:    constexpr inline void setHeight(qreal h) noexcept;
+        -:  232:    void transpose() noexcept;
+        -:  233:    [[nodiscard]] constexpr inline QSizeF transposed() const noexcept;
+        -:  234:
+        -:  235:    inline void scale(qreal w, qreal h, Qt::AspectRatioMode mode) noexcept;
+        -:  236:    inline void scale(const QSizeF &s, Qt::AspectRatioMode mode) noexcept;
+        -:  237:    [[nodiscard]] QSizeF scaled(qreal w, qreal h, Qt::AspectRatioMode mode) const noexcept;
+        -:  238:    [[nodiscard]] QSizeF scaled(const QSizeF &s, Qt::AspectRatioMode mode) const noexcept;
+        -:  239:
+        -:  240:    [[nodiscard]] constexpr inline QSizeF expandedTo(const QSizeF &) const noexcept;
+        -:  241:    [[nodiscard]] constexpr inline QSizeF boundedTo(const QSizeF &) const noexcept;
+        -:  242:
+        -:  243:    [[nodiscard]] constexpr QSizeF grownBy(QMarginsF m) const noexcept
+        -:  244:    { return {width() + m.left() + m.right(), height() + m.top() + m.bottom()}; }
+        -:  245:    [[nodiscard]] constexpr QSizeF shrunkBy(QMarginsF m) const noexcept
+        -:  246:    { return {width() - m.left() - m.right(), height() - m.top() - m.bottom()}; }
+        -:  247:
+        -:  248:    constexpr inline qreal &rwidth() noexcept;
+        -:  249:    constexpr inline qreal &rheight() noexcept;
+        -:  250:
+        -:  251:    constexpr inline QSizeF &operator+=(const QSizeF &) noexcept;
+        -:  252:    constexpr inline QSizeF &operator-=(const QSizeF &) noexcept;
+        -:  253:    constexpr inline QSizeF &operator*=(qreal c) noexcept;
+        -:  254:    inline QSizeF &operator/=(qreal c);
+        -:  255:
+        -:  256:private:
+        -:  257:    friend constexpr bool qFuzzyCompare(const QSizeF &s1, const QSizeF &s2) noexcept
+        -:  258:    {
+        -:  259:        return QtPrivate::fuzzyCompare(s1.wd, s2.wd)
+        -:  260:            && QtPrivate::fuzzyCompare(s1.ht, s2.ht);
+        -:  261:    }
+        -:  262:    friend constexpr bool qFuzzyIsNull(const QSizeF &size) noexcept
+        -:  263:    { return qFuzzyIsNull(size.wd) && qFuzzyIsNull(size.ht); }
+        -:  264:    friend constexpr bool comparesEqual(const QSizeF &lhs, const QSizeF &rhs) noexcept
+        -:  265:    { return qFuzzyCompare(lhs, rhs); }
+        -:  266:    Q_DECLARE_EQUALITY_COMPARABLE_LITERAL_TYPE(QSizeF)
+        -:  267:    friend constexpr bool comparesEqual(const QSizeF &lhs, const QSize &rhs) noexcept
+        -:  268:    { return comparesEqual(lhs, rhs.toSizeF()); }
+        -:  269:    Q_DECLARE_EQUALITY_COMPARABLE_LITERAL_TYPE(QSizeF, QSize)
+        -:  270:    friend constexpr inline QSizeF operator+(const QSizeF &s1, const QSizeF &s2) noexcept
+        -:  271:    { return QSizeF(s1.wd + s2.wd, s1.ht + s2.ht); }
+        -:  272:    friend constexpr inline QSizeF operator-(const QSizeF &s1, const QSizeF &s2) noexcept
+        -:  273:    { return QSizeF(s1.wd - s2.wd, s1.ht - s2.ht); }
+        -:  274:    friend constexpr inline QSizeF operator*(const QSizeF &s, qreal c) noexcept
+        -:  275:    { return QSizeF(s.wd * c, s.ht * c); }
+        -:  276:    friend constexpr inline QSizeF operator*(qreal c, const QSizeF &s) noexcept
+        -:  277:    { return s * c; }
+        -:  278:    friend inline QSizeF operator/(const QSizeF &s, qreal c)
+        -:  279:    { Q_ASSERT(!qFuzzyIsNull(c)); return QSizeF(s.wd / c, s.ht / c); }
+        -:  280:
+        -:  281:public:
+        -:  282:    constexpr inline QSize toSize() const noexcept;
+        -:  283:
+        -:  284:#if defined(Q_OS_DARWIN) || defined(Q_QDOC)
+        -:  285:    [[nodiscard]] static QSizeF fromCGSize(CGSize size) noexcept;
+        -:  286:    [[nodiscard]] CGSize toCGSize() const noexcept;
+        -:  287:#endif
+        -:  288:
+        -:  289:private:
+        -:  290:    qreal wd;
+        -:  291:    qreal ht;
+        -:  292:
+        -:  293:    template <std::size_t I,
+        -:  294:              typename S,
+        -:  295:              std::enable_if_t<(I < 2), bool> = true,
+        -:  296:              std::enable_if_t<std::is_same_v<q20::remove_cvref_t<S>, QSizeF>, bool> = true>
+        -:  297:    friend constexpr decltype(auto) get(S &&s) noexcept
+        -:  298:    {
+        -:  299:        if constexpr (I == 0)
+        -:  300:            return q23::forward_like<S>(s.wd);
+        -:  301:        else if constexpr (I == 1)
+        -:  302:            return q23::forward_like<S>(s.ht);
+        -:  303:    }
+        -:  304:};
+        -:  305:Q_DECLARE_TYPEINFO(QSizeF, Q_RELOCATABLE_TYPE);
+        -:  306:
+        -:  307:
+        -:  308:/*****************************************************************************
+        -:  309:  QSizeF stream functions
+        -:  310: *****************************************************************************/
+        -:  311:
+        -:  312:#ifndef QT_NO_DATASTREAM
+        -:  313:Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QSizeF &);
+        -:  314:Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QSizeF &);
+        -:  315:#endif
+        -:  316:
+        -:  317:
+        -:  318:/*****************************************************************************
+        -:  319:  QSizeF inline functions
+        -:  320: *****************************************************************************/
+        -:  321:
+        -:  322:constexpr inline QSizeF::QSizeF() noexcept : wd(-1.), ht(-1.) {}
+        -:  323:
+        -:  324:constexpr inline QSizeF::QSizeF(const QSize &sz) noexcept : wd(sz.width()), ht(sz.height()) {}
+        -:  325:
+        -:  326:constexpr inline QSizeF::QSizeF(qreal w, qreal h) noexcept : wd(w), ht(h) {}
+        -:  327:
+        -:  328:inline bool QSizeF::isNull() const noexcept
+        -:  329:{ return qIsNull(wd) && qIsNull(ht); }
+        -:  330:
+        -:  331:constexpr inline bool QSizeF::isEmpty() const noexcept
+        -:  332:{ return wd <= 0. || ht <= 0.; }
+        -:  333:
+        -:  334:constexpr inline bool QSizeF::isValid() const noexcept
+        -:  335:{ return wd >= 0. && ht >= 0.; }
+        -:  336:
+        -:  337:constexpr inline qreal QSizeF::width() const noexcept
+        -:  338:{ return wd; }
+        -:  339:
+        -:  340:constexpr inline qreal QSizeF::height() const noexcept
+        -:  341:{ return ht; }
+        -:  342:
+        -:  343:constexpr inline void QSizeF::setWidth(qreal w) noexcept
+        -:  344:{ wd = w; }
+        -:  345:
+        -:  346:constexpr inline void QSizeF::setHeight(qreal h) noexcept
+        -:  347:{ ht = h; }
+        -:  348:
+        -:  349:constexpr inline QSizeF QSizeF::transposed() const noexcept
+        -:  350:{ return QSizeF(ht, wd); }
+        -:  351:
+        -:  352:inline void QSizeF::scale(qreal w, qreal h, Qt::AspectRatioMode mode) noexcept
+        -:  353:{ scale(QSizeF(w, h), mode); }
+        -:  354:
+        -:  355:inline void QSizeF::scale(const QSizeF &s, Qt::AspectRatioMode mode) noexcept
+        -:  356:{ *this = scaled(s, mode); }
+        -:  357:
+        -:  358:inline QSizeF QSizeF::scaled(qreal w, qreal h, Qt::AspectRatioMode mode) const noexcept
+        -:  359:{ return scaled(QSizeF(w, h), mode); }
+        -:  360:
+        -:  361:constexpr inline qreal &QSizeF::rwidth() noexcept
+        -:  362:{ return wd; }
+        -:  363:
+        -:  364:constexpr inline qreal &QSizeF::rheight() noexcept
+        -:  365:{ return ht; }
+        -:  366:
+        -:  367:constexpr inline QSizeF &QSizeF::operator+=(const QSizeF &s) noexcept
+        -:  368:{
+        -:  369:    wd += s.wd;
+        -:  370:    ht += s.ht;
+        -:  371:    return *this;
+        -:  372:}
+        -:  373:
+        -:  374:constexpr inline QSizeF &QSizeF::operator-=(const QSizeF &s) noexcept
+        -:  375:{
+        -:  376:    wd -= s.wd;
+        -:  377:    ht -= s.ht;
+        -:  378:    return *this;
+        -:  379:}
+        -:  380:
+        -:  381:constexpr inline QSizeF &QSizeF::operator*=(qreal c) noexcept
+        -:  382:{
+        -:  383:    wd *= c;
+        -:  384:    ht *= c;
+        -:  385:    return *this;
+        -:  386:}
+        -:  387:
+        -:  388:inline QSizeF &QSizeF::operator/=(qreal c)
+        -:  389:{
+        -:  390:    Q_ASSERT(!qFuzzyIsNull(c) && qIsFinite(c));
+        -:  391:    wd = wd / c;
+        -:  392:    ht = ht / c;
+        -:  393:    return *this;
+        -:  394:}
+        -:  395:
+        -:  396:constexpr inline QSizeF QSizeF::expandedTo(const QSizeF &otherSize) const noexcept
+        -:  397:{
+        -:  398:    return QSizeF(qMax(wd, otherSize.wd), qMax(ht, otherSize.ht));
+        -:  399:}
+        -:  400:
+        -:  401:constexpr inline QSizeF QSizeF::boundedTo(const QSizeF &otherSize) const noexcept
+        -:  402:{
+        -:  403:    return QSizeF(qMin(wd, otherSize.wd), qMin(ht, otherSize.ht));
+        -:  404:}
+        -:  405:
+        -:  406:constexpr inline QSize QSizeF::toSize() const noexcept
+        -:  407:{
+        -:  408:    return QSize(QtPrivate::qSaturateRound(wd), QtPrivate::qSaturateRound(ht));
+        -:  409:}
+        -:  410:
+        -:  411:constexpr QSizeF QSize::toSizeF() const noexcept { return *this; }
+        -:  412:
+        -:  413:#ifndef QT_NO_DEBUG_STREAM
+        -:  414:Q_CORE_EXPORT QDebug operator<<(QDebug, const QSizeF &);
+        -:  415:#endif
+        -:  416:
+        -:  417:QT_END_NAMESPACE
+        -:  418:
+        -:  419:/*****************************************************************************
+        -:  420:  QSize/QSizeF tuple protocol
+        -:  421: *****************************************************************************/
+        -:  422:
+        -:  423:namespace std {
+        -:  424:    template <>
+        -:  425:    class tuple_size<QT_PREPEND_NAMESPACE(QSize)> : public integral_constant<size_t, 2> {};
+        -:  426:    template <>
+        -:  427:    class tuple_element<0, QT_PREPEND_NAMESPACE(QSize)> { public: using type = int; };
+        -:  428:    template <>
+        -:  429:    class tuple_element<1, QT_PREPEND_NAMESPACE(QSize)> { public: using type = int; };
+        -:  430:
+        -:  431:    template <>
+        -:  432:    class tuple_size<QT_PREPEND_NAMESPACE(QSizeF)> : public integral_constant<size_t, 2> {};
+        -:  433:    template <>
+        -:  434:    class tuple_element<0, QT_PREPEND_NAMESPACE(QSizeF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+        -:  435:    template <>
+        -:  436:    class tuple_element<1, QT_PREPEND_NAMESPACE(QSizeF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+        -:  437:}
+        -:  438:
+        -:  439:#endif // QSIZE_H

@@ -1,0 +1,210 @@
+        -:    0:Source:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/advance.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// -*- C++ -*-
+        -:    2://===----------------------------------------------------------------------===//
+        -:    3://
+        -:    4:// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+        -:    5:// See https://llvm.org/LICENSE.txt for license information.
+        -:    6:// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+        -:    7://
+        -:    8://===----------------------------------------------------------------------===//
+        -:    9:
+        -:   10:#ifndef _LIBCPP___ITERATOR_ADVANCE_H
+        -:   11:#define _LIBCPP___ITERATOR_ADVANCE_H
+        -:   12:
+        -:   13:#include <__assert>
+        -:   14:#include <__concepts/assignable.h>
+        -:   15:#include <__concepts/same_as.h>
+        -:   16:#include <__config>
+        -:   17:#include <__iterator/concepts.h>
+        -:   18:#include <__iterator/incrementable_traits.h>
+        -:   19:#include <__iterator/iterator_traits.h>
+        -:   20:#include <__type_traits/enable_if.h>
+        -:   21:#include <__type_traits/is_integral.h>
+        -:   22:#include <__utility/convert_to_integral.h>
+        -:   23:#include <__utility/declval.h>
+        -:   24:#include <__utility/move.h>
+        -:   25:#include <__utility/unreachable.h>
+        -:   26:#include <limits>
+        -:   27:
+        -:   28:#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+        -:   29:#  pragma GCC system_header
+        -:   30:#endif
+        -:   31:
+        -:   32:_LIBCPP_PUSH_MACROS
+        -:   33:#include <__undef_macros>
+        -:   34:
+        -:   35:_LIBCPP_BEGIN_NAMESPACE_STD
+        -:   36:
+        -:   37:template <class _InputIter>
+        -:   38:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 void
+        -:   39:__advance(_InputIter& __i, typename iterator_traits<_InputIter>::difference_type __n, input_iterator_tag) {
+        -:   40:  for (; __n > 0; --__n)
+        -:   41:    ++__i;
+        -:   42:}
+        -:   43:
+        -:   44:template <class _BiDirIter>
+        -:   45:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 void
+        -:   46:__advance(_BiDirIter& __i, typename iterator_traits<_BiDirIter>::difference_type __n, bidirectional_iterator_tag) {
+        -:   47:  if (__n >= 0)
+        -:   48:    for (; __n > 0; --__n)
+        -:   49:      ++__i;
+        -:   50:  else
+        -:   51:    for (; __n < 0; ++__n)
+        -:   52:      --__i;
+        -:   53:}
+        -:   54:
+        -:   55:template <class _RandIter>
+        -:   56:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 void
+    #####:   57:__advance(_RandIter& __i, typename iterator_traits<_RandIter>::difference_type __n, random_access_iterator_tag) {
+    #####:   58:  __i += __n;
+    #####:   59:}
+        -:   60:
+        -:   61:template < class _InputIter,
+        -:   62:           class _Distance,
+        -:   63:           class _IntegralDistance = decltype(std::__convert_to_integral(std::declval<_Distance>())),
+        -:   64:           __enable_if_t<is_integral<_IntegralDistance>::value, int> = 0>
+    #####:   65:_LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 void advance(_InputIter& __i, _Distance __orig_n) {
+        -:   66:  typedef typename iterator_traits<_InputIter>::difference_type _Difference;
+    #####:   67:  _Difference __n = static_cast<_Difference>(std::__convert_to_integral(__orig_n));
+        -:   68:  // Calling `advance` with a negative value on a non-bidirectional iterator is a no-op in the current implementation.
+        -:   69:  _LIBCPP_ASSERT_PEDANTIC(__n >= 0 || __has_bidirectional_iterator_category<_InputIter>::value,
+        -:   70:                          "Attempt to advance(it, n) with negative n on a non-bidirectional iterator");
+    #####:   71:  std::__advance(__i, __n, typename iterator_traits<_InputIter>::iterator_category());
+    #####:   72:}
+        -:   73:
+        -:   74:#if _LIBCPP_STD_VER >= 20
+        -:   75:
+        -:   76:// [range.iter.op.advance]
+        -:   77:
+        -:   78:namespace ranges {
+        -:   79:namespace __advance {
+        -:   80:
+        -:   81:struct __fn {
+        -:   82:private:
+        -:   83:  template <class _Ip>
+        -:   84:  _LIBCPP_HIDE_FROM_ABI static constexpr void __advance_forward(_Ip& __i, iter_difference_t<_Ip> __n) {
+        -:   85:    while (__n > 0) {
+        -:   86:      --__n;
+        -:   87:      ++__i;
+        -:   88:    }
+        -:   89:  }
+        -:   90:
+        -:   91:  template <class _Ip>
+        -:   92:  _LIBCPP_HIDE_FROM_ABI static constexpr void __advance_backward(_Ip& __i, iter_difference_t<_Ip> __n) {
+        -:   93:    while (__n < 0) {
+        -:   94:      ++__n;
+        -:   95:      --__i;
+        -:   96:    }
+        -:   97:  }
+        -:   98:
+        -:   99:public:
+        -:  100:  // Preconditions: If `I` does not model `bidirectional_iterator`, `n` is not negative.
+        -:  101:  template <input_or_output_iterator _Ip>
+        -:  102:  _LIBCPP_HIDE_FROM_ABI constexpr void operator()(_Ip& __i, iter_difference_t<_Ip> __n) const {
+        -:  103:    // Calling `advance` with a negative value on a non-bidirectional iterator is a no-op in the current implementation.
+        -:  104:    _LIBCPP_ASSERT_PEDANTIC(
+        -:  105:        __n >= 0 || bidirectional_iterator<_Ip>, "If `n < 0`, then `bidirectional_iterator<I>` must be true.");
+        -:  106:
+        -:  107:    // If `I` models `random_access_iterator`, equivalent to `i += n`.
+        -:  108:    if constexpr (random_access_iterator<_Ip>) {
+        -:  109:      __i += __n;
+        -:  110:      return;
+        -:  111:    } else if constexpr (bidirectional_iterator<_Ip>) {
+        -:  112:      // Otherwise, if `n` is non-negative, increments `i` by `n`.
+        -:  113:      __advance_forward(__i, __n);
+        -:  114:      // Otherwise, decrements `i` by `-n`.
+        -:  115:      __advance_backward(__i, __n);
+        -:  116:      return;
+        -:  117:    } else {
+        -:  118:      // Otherwise, if `n` is non-negative, increments `i` by `n`.
+        -:  119:      __advance_forward(__i, __n);
+        -:  120:      return;
+        -:  121:    }
+        -:  122:  }
+        -:  123:
+        -:  124:  // Preconditions: Either `assignable_from<I&, S> || sized_sentinel_for<S, I>` is modeled, or [i, bound_sentinel)
+        -:  125:  // denotes a range.
+        -:  126:  template <input_or_output_iterator _Ip, sentinel_for<_Ip> _Sp>
+        -:  127:  _LIBCPP_HIDE_FROM_ABI constexpr void operator()(_Ip& __i, _Sp __bound_sentinel) const {
+        -:  128:    // If `I` and `S` model `assignable_from<I&, S>`, equivalent to `i = std::move(bound_sentinel)`.
+        -:  129:    if constexpr (assignable_from<_Ip&, _Sp>) {
+        -:  130:      __i = std::move(__bound_sentinel);
+        -:  131:    }
+        -:  132:    // Otherwise, if `S` and `I` model `sized_sentinel_for<S, I>`, equivalent to `ranges::advance(i, bound_sentinel -
+        -:  133:    // i)`.
+        -:  134:    else if constexpr (sized_sentinel_for<_Sp, _Ip>) {
+        -:  135:      (*this)(__i, __bound_sentinel - __i);
+        -:  136:    }
+        -:  137:    // Otherwise, while `bool(i != bound_sentinel)` is true, increments `i`.
+        -:  138:    else {
+        -:  139:      while (__i != __bound_sentinel) {
+        -:  140:        ++__i;
+        -:  141:      }
+        -:  142:    }
+        -:  143:  }
+        -:  144:
+        -:  145:  // Preconditions:
+        -:  146:  //   * If `n > 0`, [i, bound_sentinel) denotes a range.
+        -:  147:  //   * If `n == 0`, [i, bound_sentinel) or [bound_sentinel, i) denotes a range.
+        -:  148:  //   * If `n < 0`, [bound_sentinel, i) denotes a range, `I` models `bidirectional_iterator`, and `I` and `S` model
+        -:  149:  //   `same_as<I, S>`.
+        -:  150:  // Returns: `n - M`, where `M` is the difference between the ending and starting position.
+        -:  151:  template <input_or_output_iterator _Ip, sentinel_for<_Ip> _Sp>
+        -:  152:  _LIBCPP_HIDE_FROM_ABI constexpr iter_difference_t<_Ip>
+        -:  153:  operator()(_Ip& __i, iter_difference_t<_Ip> __n, _Sp __bound_sentinel) const {
+        -:  154:    // Calling `advance` with a negative value on a non-bidirectional iterator is a no-op in the current implementation.
+        -:  155:    _LIBCPP_ASSERT_PEDANTIC((__n >= 0) || (bidirectional_iterator<_Ip> && same_as<_Ip, _Sp>),
+        -:  156:                            "If `n < 0`, then `bidirectional_iterator<I> && same_as<I, S>` must be true.");
+        -:  157:    // If `S` and `I` model `sized_sentinel_for<S, I>`:
+        -:  158:    if constexpr (sized_sentinel_for<_Sp, _Ip>) {
+        -:  159:      // If |n| >= |bound_sentinel - i|, equivalent to `ranges::advance(i, bound_sentinel)`.
+        -:  160:      // __magnitude_geq(a, b) returns |a| >= |b|, assuming they have the same sign.
+        -:  161:      auto __magnitude_geq = [](auto __a, auto __b) { return __a == 0 ? __b == 0 : __a > 0 ? __a >= __b : __a <= __b; };
+        -:  162:      if (const auto __m = __bound_sentinel - __i; __magnitude_geq(__n, __m)) {
+        -:  163:        (*this)(__i, __bound_sentinel);
+        -:  164:        return __n - __m;
+        -:  165:      }
+        -:  166:
+        -:  167:      // Otherwise, equivalent to `ranges::advance(i, n)`.
+        -:  168:      (*this)(__i, __n);
+        -:  169:      return 0;
+        -:  170:    } else {
+        -:  171:      // Otherwise, if `n` is non-negative, while `bool(i != bound_sentinel)` is true, increments `i` but at
+        -:  172:      // most `n` times.
+        -:  173:      while (__n > 0 && __i != __bound_sentinel) {
+        -:  174:        ++__i;
+        -:  175:        --__n;
+        -:  176:      }
+        -:  177:
+        -:  178:      // Otherwise, while `bool(i != bound_sentinel)` is true, decrements `i` but at most `-n` times.
+        -:  179:      if constexpr (bidirectional_iterator<_Ip> && same_as<_Ip, _Sp>) {
+        -:  180:        while (__n < 0 && __i != __bound_sentinel) {
+        -:  181:          --__i;
+        -:  182:          ++__n;
+        -:  183:        }
+        -:  184:      }
+        -:  185:      return __n;
+        -:  186:    }
+        -:  187:
+        -:  188:    __libcpp_unreachable();
+        -:  189:  }
+        -:  190:};
+        -:  191:
+        -:  192:} // namespace __advance
+        -:  193:
+        -:  194:inline namespace __cpo {
+        -:  195:inline constexpr auto advance = __advance::__fn{};
+        -:  196:} // namespace __cpo
+        -:  197:} // namespace ranges
+        -:  198:
+        -:  199:#endif // _LIBCPP_STD_VER >= 20
+        -:  200:
+        -:  201:_LIBCPP_END_NAMESPACE_STD
+        -:  202:
+        -:  203:_LIBCPP_POP_MACROS
+        -:  204:
+        -:  205:#endif // _LIBCPP___ITERATOR_ADVANCE_H

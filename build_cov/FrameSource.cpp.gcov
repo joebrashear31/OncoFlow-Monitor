@@ -1,0 +1,92 @@
+        -:    0:Source:/Users/joebrashear/Desktop/OncoFlow-Monitor/src/services/FrameSource.cpp
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "FrameSource.h"
+        -:    2:
+        -:    3:#include <QDir>
+        -:    4:#include <QFileInfoList>    
+        -:    5:
+function _ZN11FrameSource14loadFromFolderERK7QString called 42 returned 100% blocks executed 58%
+       42:    6:bool FrameSource::loadFromFolder(const QString &folderPath)
+        -:    7:{
+       42:    8:    QDir dir(folderPath);
+       42:    9:    if (!dir.exists()) return false;
+branch  0 taken 100%
+branch  1 taken 0%
+branch  2 taken 93%
+branch  3 taken 7%
+        -:   10:
+       39:   11:    QStringList filters = {"*.png", "*.jpg", "*.jpeg", "*.bmp"};
+branch  0 taken 100%
+branch  1 taken 0%
+branch  2 taken 100%
+branch  3 taken 0%
+branch  4 taken 100%
+branch  5 taken 0%
+branch  6 taken 100%
+branch  7 taken 0%
+branch  8 taken 100%
+branch  9 taken 0%
+       39:   12:    QFileInfoList fileInfoList = dir.entryInfoList(filters, QDir::Files, QDir::Name);
+branch  0 taken 100%
+branch  1 taken 0%
+       39:   13:    framePaths_m.clear();
+branch  0 taken 100%
+branch  1 taken 0%
+      477:   14:    for (const auto &fileInfo : fileInfoList)
+branch  0 taken 100%
+branch  1 taken 0%
+branch  2 taken 100%
+branch  3 taken 0%
+branch  4 taken 100%
+branch  5 taken 0%
+branch  6 taken 92%
+branch  7 taken 8%
+branch  8 taken 100%
+branch  9 taken 0%
+branch 10 taken 100%
+branch 11 taken 0%
+      438:   15:        framePaths_m.append(fileInfo.absoluteFilePath());
+branch  0 taken 100%
+branch  1 taken 0%
+branch  2 taken 100%
+branch  3 taken 0%
+        -:   16:
+       39:   17:    return !framePaths_m.isEmpty();
+       42:   18:}
+        -:   19:
+function _ZNK11FrameSource10frameCountEv called 43 returned 100% blocks executed 100%
+       43:   20:int FrameSource::frameCount() const
+        -:   21:{
+       43:   22:    return framePaths_m.size();
+        -:   23:}  
+        -:   24:
+function _ZNK11FrameSource8getFrameEi called 16 returned 100% blocks executed 100%
+       16:   25:QImage FrameSource::getFrame(int index) const
+        -:   26:{
+       16:   27:    if (index < 0 || index >= framePaths_m.size()) return QImage();
+branch  0 taken 94%
+branch  1 taken 6%
+branch  2 taken 20%
+branch  3 taken 80%
+       12:   28:    return QImage(framePaths_m.at(index));
+       16:   29:}
+        -:   30:
+function _ZNK11FrameSource12getFramePathEi called 7 returned 100% blocks executed 100%
+        7:   31:QString FrameSource::getFramePath(int index) const
+        -:   32:{
+        7:   33:    if (index < 0 || index >= framePaths_m.size()) return QString();
+branch  0 taken 86%
+branch  1 taken 14%
+branch  2 taken 33%
+branch  3 taken 67%
+        4:   34:    return framePaths_m.at(index);
+        7:   35:}
+        -:   36:
+function _ZNK11FrameSource8isLoadedEv called 55 returned 100% blocks executed 100%
+       55:   37:bool FrameSource::isLoaded() const
+        -:   38:{
+       55:   39:    return !framePaths_m.isEmpty();
+        -:   40:}

@@ -1,0 +1,243 @@
+        -:    0:Source:/opt/homebrew/lib/QtMultimedia.framework/Headers/qmediaplayer.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// Copyright (C) 2016 The Qt Company Ltd.
+        -:    2:// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+        -:    3:
+        -:    4:#ifndef QMEDIAPLAYER_H
+        -:    5:#define QMEDIAPLAYER_H
+        -:    6:
+        -:    7:#include <QtCore/qobject.h>
+        -:    8:#include <QtCore/qurl.h>
+        -:    9:#include <QtMultimedia/qtmultimediaglobal.h>
+        -:   10:#include <QtMultimedia/qtaudio.h>
+        -:   11:
+        -:   12:QT_BEGIN_NAMESPACE
+        -:   13:
+        -:   14:class QVideoSink;
+        -:   15:class QAudioOutput;
+        -:   16:class QAudioDevice;
+        -:   17:class QMediaMetaData;
+        -:   18:class QMediaTimeRange;
+        -:   19:class QAudioBufferOutput;
+        -:   20:class QPlaybackOptions;
+        -:   21:
+        -:   22:class QMediaPlayerPrivate;
+        -:   23:class Q_MULTIMEDIA_EXPORT QMediaPlayer : public QObject
+        -:   24:{
+        -:   25:    Q_OBJECT
+        -:   26:    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+        -:   27:    Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
+        -:   28:    Q_PROPERTY(qint64 position READ position WRITE setPosition NOTIFY positionChanged)
+        -:   29:    Q_PROPERTY(float bufferProgress READ bufferProgress NOTIFY bufferProgressChanged)
+        -:   30:    Q_PROPERTY(bool hasAudio READ hasAudio NOTIFY hasAudioChanged)
+        -:   31:    Q_PROPERTY(bool hasVideo READ hasVideo NOTIFY hasVideoChanged)
+        -:   32:    Q_PROPERTY(bool seekable READ isSeekable NOTIFY seekableChanged)
+        -:   33:    Q_PROPERTY(bool playing READ isPlaying NOTIFY playingChanged)
+        -:   34:    Q_PROPERTY(qreal playbackRate READ playbackRate WRITE setPlaybackRate NOTIFY playbackRateChanged)
+        -:   35:    Q_PROPERTY(int loops READ loops WRITE setLoops NOTIFY loopsChanged)
+        -:   36:    Q_PROPERTY(PlaybackState playbackState READ playbackState NOTIFY playbackStateChanged)
+        -:   37:    Q_PROPERTY(MediaStatus mediaStatus READ mediaStatus NOTIFY mediaStatusChanged)
+        -:   38:    Q_PROPERTY(QMediaMetaData metaData READ metaData NOTIFY metaDataChanged)
+        -:   39:    Q_PROPERTY(Error error READ error NOTIFY errorChanged)
+        -:   40:    Q_PROPERTY(QString errorString READ errorString NOTIFY errorChanged)
+        -:   41:    Q_PROPERTY(QObject *videoOutput READ videoOutput WRITE setVideoOutput NOTIFY videoOutputChanged)
+        -:   42:    Q_PROPERTY(QAudioOutput *audioOutput READ audioOutput WRITE setAudioOutput NOTIFY
+        -:   43:                       audioOutputChanged)
+        -:   44:    Q_REVISION(6, 8)
+        -:   45:    Q_PROPERTY(QAudioBufferOutput *audioBufferOutput READ audioBufferOutput WRITE
+        -:   46:                       setAudioBufferOutput NOTIFY audioBufferOutputChanged)
+        -:   47:    Q_PROPERTY(QList<QMediaMetaData> audioTracks READ audioTracks NOTIFY tracksChanged)
+        -:   48:    Q_PROPERTY(QList<QMediaMetaData> videoTracks READ videoTracks NOTIFY tracksChanged)
+        -:   49:    Q_PROPERTY(QList<QMediaMetaData> subtitleTracks READ subtitleTracks NOTIFY tracksChanged)
+        -:   50:
+        -:   51:    Q_PROPERTY(int activeAudioTrack READ activeAudioTrack WRITE setActiveAudioTrack NOTIFY
+        -:   52:                       activeTracksChanged)
+        -:   53:    Q_PROPERTY(int activeVideoTrack READ activeVideoTrack WRITE setActiveVideoTrack NOTIFY
+        -:   54:                       activeTracksChanged)
+        -:   55:    Q_PROPERTY(int activeSubtitleTrack READ activeSubtitleTrack WRITE setActiveSubtitleTrack NOTIFY
+        -:   56:                       activeTracksChanged)
+        -:   57:
+        -:   58:    Q_REVISION(6, 10)
+        -:   59:    Q_PROPERTY(PitchCompensationAvailability pitchCompensationAvailability READ
+        -:   60:                       pitchCompensationAvailability CONSTANT)
+        -:   61:
+        -:   62:    Q_REVISION(6, 10)
+        -:   63:    Q_PROPERTY(bool pitchCompensation READ pitchCompensation WRITE setPitchCompensation NOTIFY
+        -:   64:                       pitchCompensationChanged)
+        -:   65:
+        -:   66:    Q_REVISION(6, 10)
+        -:   67:    Q_PROPERTY(QPlaybackOptions playbackOptions READ playbackOptions WRITE setPlaybackOptions NOTIFY
+        -:   68:                       playbackOptionsChanged RESET resetPlaybackOptions)
+        -:   69:
+        -:   70:public:
+        -:   71:    enum PlaybackState
+        -:   72:    {
+        -:   73:        StoppedState,
+        -:   74:        PlayingState,
+        -:   75:        PausedState
+        -:   76:    };
+    #####:   77:    Q_ENUM(PlaybackState)
+        -:   78:
+        -:   79:    enum MediaStatus
+        -:   80:    {
+        -:   81:        NoMedia,
+        -:   82:        LoadingMedia,
+        -:   83:        LoadedMedia,
+        -:   84:        StalledMedia,
+        -:   85:        BufferingMedia,
+        -:   86:        BufferedMedia,
+        -:   87:        EndOfMedia,
+        -:   88:        InvalidMedia
+        -:   89:    };
+        -:   90:    Q_ENUM(MediaStatus)
+        -:   91:
+        -:   92:    enum Error
+        -:   93:    {
+        -:   94:        NoError,
+        -:   95:        ResourceError,
+        -:   96:        FormatError,
+        -:   97:        NetworkError,
+        -:   98:        AccessDeniedError
+        -:   99:    };
+        -:  100:    Q_ENUM(Error)
+        -:  101:
+        -:  102:    enum Loops
+        -:  103:    {
+        -:  104:        Infinite = -1,
+        -:  105:        Once = 1
+        -:  106:    };
+        -:  107:    Q_ENUM(Loops)
+        -:  108:
+        -:  109:    enum class PitchCompensationAvailability
+        -:  110:    {
+        -:  111:        AlwaysOn,
+        -:  112:        Available,
+        -:  113:        Unavailable,
+        -:  114:    };
+        -:  115:    Q_ENUM(PitchCompensationAvailability)
+        -:  116:
+        -:  117:    explicit QMediaPlayer(QObject *parent = nullptr);
+        -:  118:    ~QMediaPlayer() override;
+        -:  119:
+        -:  120:    QList<QMediaMetaData> audioTracks() const;
+        -:  121:    QList<QMediaMetaData> videoTracks() const;
+        -:  122:    QList<QMediaMetaData> subtitleTracks() const;
+        -:  123:
+        -:  124:    int activeAudioTrack() const;
+        -:  125:    int activeVideoTrack() const;
+        -:  126:    int activeSubtitleTrack() const;
+        -:  127:
+        -:  128:    void setActiveAudioTrack(int index);
+        -:  129:    void setActiveVideoTrack(int index);
+        -:  130:    void setActiveSubtitleTrack(int index);
+        -:  131:
+        -:  132:    void setAudioBufferOutput(QAudioBufferOutput *output);
+        -:  133:    QAudioBufferOutput *audioBufferOutput() const;
+        -:  134:
+        -:  135:    void setAudioOutput(QAudioOutput *output);
+        -:  136:    QAudioOutput *audioOutput() const;
+        -:  137:
+        -:  138:    void setVideoOutput(QObject *);
+        -:  139:    QObject *videoOutput() const;
+        -:  140:
+        -:  141:    void setVideoSink(QVideoSink *sink);
+        -:  142:    QVideoSink *videoSink() const;
+        -:  143:
+        -:  144:    QUrl source() const;
+        -:  145:    const QIODevice *sourceDevice() const;
+        -:  146:
+        -:  147:    PlaybackState playbackState() const;
+        -:  148:    MediaStatus mediaStatus() const;
+        -:  149:
+        -:  150:    qint64 duration() const;
+        -:  151:    qint64 position() const;
+        -:  152:
+        -:  153:    bool hasAudio() const;
+        -:  154:    bool hasVideo() const;
+        -:  155:
+        -:  156:    float bufferProgress() const;
+        -:  157:    QMediaTimeRange bufferedTimeRange() const;
+        -:  158:
+        -:  159:    bool isSeekable() const;
+        -:  160:    qreal playbackRate() const;
+        -:  161:
+        -:  162:    bool isPlaying() const;
+        -:  163:
+        -:  164:    int loops() const;
+        -:  165:    void setLoops(int loops);
+        -:  166:
+        -:  167:    Error error() const;
+        -:  168:    QString errorString() const;
+        -:  169:
+        -:  170:    bool isAvailable() const;
+        -:  171:    QMediaMetaData metaData() const;
+        -:  172:
+        -:  173:    PitchCompensationAvailability pitchCompensationAvailability() const;
+        -:  174:    bool pitchCompensation() const;
+        -:  175:
+        -:  176:    QPlaybackOptions playbackOptions() const;
+        -:  177:
+        -:  178:public Q_SLOTS:
+        -:  179:    void play();
+        -:  180:    void pause();
+        -:  181:    void stop();
+        -:  182:
+        -:  183:    void setPosition(qint64 position);
+        -:  184:
+        -:  185:    void setPlaybackRate(qreal rate);
+        -:  186:
+        -:  187:    void setSource(const QUrl &source);
+        -:  188:    void setSourceDevice(QIODevice *device, const QUrl &sourceUrl = QUrl());
+        -:  189:
+        -:  190:    void setPitchCompensation(bool) const;
+        -:  191:
+        -:  192:    void setPlaybackOptions(const QPlaybackOptions &options);
+        -:  193:    void resetPlaybackOptions();
+        -:  194:
+        -:  195:Q_SIGNALS:
+        -:  196:    void sourceChanged(const QUrl &media);
+        -:  197:    void playbackStateChanged(QMediaPlayer::PlaybackState newState);
+        -:  198:    void mediaStatusChanged(QMediaPlayer::MediaStatus status);
+        -:  199:
+        -:  200:    void durationChanged(qint64 duration);
+        -:  201:    void positionChanged(qint64 position);
+        -:  202:
+        -:  203:    void hasAudioChanged(bool available);
+        -:  204:    void hasVideoChanged(bool videoAvailable);
+        -:  205:
+        -:  206:    void bufferProgressChanged(float progress);
+        -:  207:
+        -:  208:    void seekableChanged(bool seekable);
+        -:  209:    void playingChanged(bool playing);
+        -:  210:    void playbackRateChanged(qreal rate);
+        -:  211:    void loopsChanged();
+        -:  212:
+        -:  213:    void metaDataChanged();
+        -:  214:    void videoOutputChanged();
+        -:  215:    void audioOutputChanged();
+        -:  216:    Q_REVISION(6, 8) void audioBufferOutputChanged();
+        -:  217:
+        -:  218:    void tracksChanged();
+        -:  219:    void activeTracksChanged();
+        -:  220:
+        -:  221:    void errorChanged();
+        -:  222:    void errorOccurred(QMediaPlayer::Error error, const QString &errorString);
+        -:  223:
+        -:  224:    Q_REVISION(6, 10)
+        -:  225:    void pitchCompensationChanged(bool);
+        -:  226:
+        -:  227:    Q_REVISION(6, 10)
+        -:  228:    void playbackOptionsChanged();
+        -:  229:
+        -:  230:private:
+        -:  231:    Q_DISABLE_COPY(QMediaPlayer)
+        -:  232:    Q_DECLARE_PRIVATE(QMediaPlayer)
+        -:  233:    friend class QPlatformMediaPlayer;
+        -:  234:};
+        -:  235:
+        -:  236:QT_END_NAMESPACE
+        -:  237:
+        -:  238:#endif  // QMEDIAPLAYER_H

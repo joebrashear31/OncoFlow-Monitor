@@ -1,0 +1,2 @@
+/usr/bin/ar qc libOncoFlowTestLib.a CMakeFiles/OncoFlowTestLib.dir/OncoFlowTestLib_autogen/mocs_compilation.cpp.o CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.o CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.o
+/usr/bin/ranlib libOncoFlowTestLib.a

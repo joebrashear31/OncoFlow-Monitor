@@ -1,0 +1,169 @@
+        -:    0:Source:/opt/homebrew/lib/QtMultimedia.framework/Headers/qvideoframe.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// Copyright (C) 2016 The Qt Company Ltd.
+        -:    2:// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+        -:    3:
+        -:    4:#ifndef QVIDEOFRAME_H
+        -:    5:#define QVIDEOFRAME_H
+        -:    6:
+        -:    7:#include <QtMultimedia/qtmultimediaglobal.h>
+        -:    8:#include <QtMultimedia/qtvideo.h>
+        -:    9:#include <QtMultimedia/qvideoframeformat.h>
+        -:   10:
+        -:   11:#include <QtCore/qmetatype.h>
+        -:   12:#include <QtCore/qshareddata.h>
+        -:   13:#include <QtGui/qimage.h>
+        -:   14:
+        -:   15:QT_BEGIN_NAMESPACE
+        -:   16:
+        -:   17:class QSize;
+        -:   18:class QVideoFramePrivate;
+        -:   19:class QAbstractVideoBuffer;
+        -:   20:class QRhi;
+        -:   21:class QRhiResourceUpdateBatch;
+        -:   22:class QRhiTexture;
+        -:   23:
+        -:   24:QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QVideoFramePrivate, Q_MULTIMEDIA_EXPORT)
+        -:   25:
+        -:   26:class Q_MULTIMEDIA_EXPORT QVideoFrame
+        -:   27:{
+        -:   28:    Q_GADGET
+        -:   29:public:
+        -:   30:
+        -:   31:    enum HandleType
+        -:   32:    {
+        -:   33:        NoHandle,
+        -:   34:        RhiTextureHandle
+        -:   35:    };
+        -:   36:
+        -:   37:    enum MapMode
+        -:   38:    {
+        -:   39:        NotMapped = 0x00,
+        -:   40:        ReadOnly  = 0x01,
+        -:   41:        WriteOnly = 0x02,
+        -:   42:        ReadWrite = ReadOnly | WriteOnly
+        -:   43:    };
+        -:   44:    Q_ENUM(MapMode)
+        -:   45:
+        -:   46:#if QT_DEPRECATED_SINCE(6, 7)
+        -:   47:    enum RotationAngle
+        -:   48:    {
+        -:   49:        Rotation0 Q_DECL_ENUMERATOR_DEPRECATED_X("Use QtVideo::Rotation::None instead") = 0,
+        -:   50:        Rotation90 Q_DECL_ENUMERATOR_DEPRECATED_X("Use QtVideo::Rotation::Clockwise90 instead") = 90,
+        -:   51:        Rotation180 Q_DECL_ENUMERATOR_DEPRECATED_X("Use QtVideo::Rotation::Clockwise180 instead") = 180,
+        -:   52:        Rotation270 Q_DECL_ENUMERATOR_DEPRECATED_X("Use QtVideo::Rotation::Clockwise270 instead") = 270
+        -:   53:    };
+        -:   54:#endif
+        -:   55:
+        -:   56:    QVideoFrame();
+        -:   57:    QVideoFrame(const QVideoFrameFormat &format);
+        -:   58:    explicit QVideoFrame(const QImage &image);
+        -:   59:    explicit QVideoFrame(std::unique_ptr<QAbstractVideoBuffer> videoBuffer);
+        -:   60:    QVideoFrame(const QVideoFrame &other);
+        -:   61:    ~QVideoFrame();
+        -:   62:
+    #####:   63:    QVideoFrame(QVideoFrame &&other) noexcept = default;
+        -:   64:    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QVideoFrame)
+        -:   65:    void swap(QVideoFrame &other) noexcept
+        -:   66:    { d.swap(other.d); }
+        -:   67:
+        -:   68:
+        -:   69:    QVideoFrame &operator =(const QVideoFrame &other);
+        -:   70:    bool operator==(const QVideoFrame &other) const;
+        -:   71:    bool operator!=(const QVideoFrame &other) const;
+        -:   72:
+        -:   73:    bool isValid() const;
+        -:   74:
+        -:   75:    QVideoFrameFormat::PixelFormat pixelFormat() const;
+        -:   76:
+        -:   77:    QVideoFrameFormat surfaceFormat() const;
+        -:   78:    QVideoFrame::HandleType handleType() const;
+        -:   79:
+        -:   80:    QSize size() const;
+        -:   81:    int width() const;
+        -:   82:    int height() const;
+        -:   83:
+        -:   84:    bool isMapped() const;
+        -:   85:    bool isReadable() const;
+        -:   86:    bool isWritable() const;
+        -:   87:
+        -:   88:    QVideoFrame::MapMode mapMode() const;
+        -:   89:
+        -:   90:    bool map(QVideoFrame::MapMode mode);
+        -:   91:    void unmap();
+        -:   92:
+        -:   93:    int bytesPerLine(int plane) const;
+        -:   94:
+        -:   95:    uchar *bits(int plane);
+        -:   96:    const uchar *bits(int plane) const;
+        -:   97:    int mappedBytes(int plane) const;
+        -:   98:    int planeCount() const;
+        -:   99:
+        -:  100:    qint64 startTime() const;
+        -:  101:    void setStartTime(qint64 time);
+        -:  102:
+        -:  103:    qint64 endTime() const;
+        -:  104:    void setEndTime(qint64 time);
+        -:  105:
+        -:  106:#if QT_DEPRECATED_SINCE(6, 7)
+        -:  107:    QT_DEPRECATED_VERSION_X_6_7("Use QVideoFrame::setRotation(QtVideo::Rotation) instead")
+        -:  108:    void setRotationAngle(RotationAngle angle) { setRotation(QtVideo::Rotation(angle)); }
+        -:  109:
+        -:  110:    QT_DEPRECATED_VERSION_X_6_7("Use QVideoFrame::rotation() instead")
+        -:  111:    RotationAngle rotationAngle() const { return RotationAngle(rotation()); }
+        -:  112:#endif
+        -:  113:
+        -:  114:    void setRotation(QtVideo::Rotation angle);
+        -:  115:    QtVideo::Rotation rotation() const;
+        -:  116:
+        -:  117:    void setMirrored(bool);
+        -:  118:    bool mirrored() const;
+        -:  119:
+        -:  120:    void setStreamFrameRate(qreal rate);
+        -:  121:    qreal streamFrameRate() const;
+        -:  122:
+        -:  123:    QImage toImage() const;
+        -:  124:
+        -:  125:    struct PaintOptions {
+        -:  126:        QColor backgroundColor = Qt::transparent;
+        -:  127:        Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio;
+        -:  128:        enum PaintFlag {
+        -:  129:            DontDrawSubtitles = 0x1
+        -:  130:        };
+        -:  131:        Q_DECLARE_FLAGS(PaintFlags, PaintFlag)
+        -:  132:        PaintFlags paintFlags = {};
+        -:  133:    };
+        -:  134:
+        -:  135:    QString subtitleText() const;
+        -:  136:    void setSubtitleText(const QString &text);
+        -:  137:
+        -:  138:    void paint(QPainter *painter, const QRectF &rect, const PaintOptions &options);
+        -:  139:
+        -:  140:#if QT_DEPRECATED_SINCE(6, 8)
+        -:  141:    QT_DEPRECATED_VERSION_X_6_8("The constructor is internal and deprecated")
+        -:  142:    QVideoFrame(QAbstractVideoBuffer *buffer, const QVideoFrameFormat &format);
+        -:  143:
+        -:  144:    QT_DEPRECATED_VERSION_X_6_8("The method is internal and deprecated")
+        -:  145:    QAbstractVideoBuffer *videoBuffer() const;
+        -:  146:#endif
+        -:  147:private:
+        -:  148:    friend class QVideoFramePrivate;
+        -:  149:    QExplicitlySharedDataPointer<QVideoFramePrivate> d;
+        -:  150:};
+        -:  151:
+        -:  152:Q_DECLARE_SHARED(QVideoFrame)
+        -:  153:
+        -:  154:#ifndef QT_NO_DEBUG_STREAM
+        -:  155:Q_MULTIMEDIA_EXPORT QDebug operator<<(QDebug, const QVideoFrame&);
+        -:  156:Q_MULTIMEDIA_EXPORT QDebug operator<<(QDebug, QVideoFrame::HandleType);
+        -:  157:#endif
+        -:  158:
+        -:  159:QT_END_NAMESPACE
+        -:  160:
+        1:  161:Q_DECLARE_METATYPE(QVideoFrame)
+        -:  162:
+        -:  163:#endif
+        -:  164:

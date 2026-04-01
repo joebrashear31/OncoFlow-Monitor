@@ -1,0 +1,49 @@
+        -:    0:Source:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/exchange.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://===----------------------------------------------------------------------===//
+        -:    2://
+        -:    3:// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+        -:    4:// See https://llvm.org/LICENSE.txt for license information.
+        -:    5:// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+        -:    6://
+        -:    7://===----------------------------------------------------------------------===//
+        -:    8:
+        -:    9:#ifndef _LIBCPP___UTILITY_EXCHANGE_H
+        -:   10:#define _LIBCPP___UTILITY_EXCHANGE_H
+        -:   11:
+        -:   12:#include <__config>
+        -:   13:#include <__type_traits/is_nothrow_assignable.h>
+        -:   14:#include <__type_traits/is_nothrow_constructible.h>
+        -:   15:#include <__utility/forward.h>
+        -:   16:#include <__utility/move.h>
+        -:   17:
+        -:   18:#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+        -:   19:#  pragma GCC system_header
+        -:   20:#endif
+        -:   21:
+        -:   22:_LIBCPP_PUSH_MACROS
+        -:   23:#include <__undef_macros>
+        -:   24:
+        -:   25:_LIBCPP_BEGIN_NAMESPACE_STD
+        -:   26:
+        -:   27:#if _LIBCPP_STD_VER >= 14
+        -:   28:template <class _T1, class _T2 = _T1>
+function _ZNSt3__18exchangeB8ne190102IP15QTypedArrayDataIDsEDnEET_RS4_OT0_ called 0 returned 0% blocks executed 0%
+function _ZNSt3__18exchangeB8ne190102IPDsDnEET_RS2_OT0_ called 0 returned 0% blocks executed 0%
+function _ZNSt3__18exchangeB8ne190102IxiEET_RS1_OT0_ called 0 returned 0% blocks executed 0%
+    #####:   29:inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 _T1 exchange(_T1& __obj, _T2&& __new_value) noexcept(
+        -:   30:    is_nothrow_move_constructible<_T1>::value && is_nothrow_assignable<_T1&, _T2>::value) {
+    #####:   31:  _T1 __old_value = std::move(__obj);
+    #####:   32:  __obj           = std::forward<_T2>(__new_value);
+    #####:   33:  return __old_value;
+        -:   34:}
+        -:   35:#endif // _LIBCPP_STD_VER >= 14
+        -:   36:
+        -:   37:_LIBCPP_END_NAMESPACE_STD
+        -:   38:
+        -:   39:_LIBCPP_POP_MACROS
+        -:   40:
+        -:   41:#endif // _LIBCPP___UTILITY_EXCHANGE_H

@@ -1,0 +1,55 @@
+        -:    0:Source:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/data.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/services/FrameSource.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// -*- C++ -*-
+        -:    2://===----------------------------------------------------------------------===//
+        -:    3://
+        -:    4:// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+        -:    5:// See https://llvm.org/LICENSE.txt for license information.
+        -:    6:// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+        -:    7://
+        -:    8://===----------------------------------------------------------------------===//
+        -:    9:
+        -:   10:#ifndef _LIBCPP___ITERATOR_DATA_H
+        -:   11:#define _LIBCPP___ITERATOR_DATA_H
+        -:   12:
+        -:   13:#include <__config>
+        -:   14:#include <cstddef>
+        -:   15:#include <initializer_list>
+        -:   16:
+        -:   17:#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+        -:   18:#  pragma GCC system_header
+        -:   19:#endif
+        -:   20:
+        -:   21:_LIBCPP_BEGIN_NAMESPACE_STD
+        -:   22:
+        -:   23:#if _LIBCPP_STD_VER >= 17
+        -:   24:
+        -:   25:template <class _Cont>
+        -:   26:constexpr _LIBCPP_HIDE_FROM_ABI auto data(_Cont& __c) noexcept(noexcept(__c.data())) -> decltype(__c.data()) {
+        -:   27:  return __c.data();
+        -:   28:}
+        -:   29:
+        -:   30:template <class _Cont>
+function _ZNSt3__14dataB8ne190102I17QArrayDataPointerI7QStringEEEDTcldtfp_4dataEERKT_ called 0 returned 0% blocks executed 0%
+    #####:   31:constexpr _LIBCPP_HIDE_FROM_ABI auto data(const _Cont& __c) noexcept(noexcept(__c.data())) -> decltype(__c.data()) {
+    #####:   32:  return __c.data();
+        -:   33:}
+        -:   34:
+        -:   35:template <class _Tp, size_t _Sz>
+        -:   36:_LIBCPP_HIDE_FROM_ABI constexpr _Tp* data(_Tp (&__array)[_Sz]) noexcept {
+        -:   37:  return __array;
+        -:   38:}
+        -:   39:
+        -:   40:template <class _Ep>
+        -:   41:_LIBCPP_HIDE_FROM_ABI constexpr const _Ep* data(initializer_list<_Ep> __il) noexcept {
+        -:   42:  return __il.begin();
+        -:   43:}
+        -:   44:
+        -:   45:#endif
+        -:   46:
+        -:   47:_LIBCPP_END_NAMESPACE_STD
+        -:   48:
+        -:   49:#endif // _LIBCPP___ITERATOR_DATA_H

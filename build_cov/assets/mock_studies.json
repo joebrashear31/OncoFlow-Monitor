@@ -1,0 +1,26 @@
+[
+  {
+    "studyId": "CT_LUNG_001",
+    "patientAlias": "PATIENT_A",
+    "modality": "CT",
+    "acquisitionDate": "2026-03-01",
+    "filePath": "mock/ct_lung_001",
+    "status": "Ready"
+  },
+  {
+    "studyId": "CT_BRAIN_014",
+    "patientAlias": "PATIENT_B",
+    "modality": "CT",
+    "acquisitionDate": "2026-03-03",
+    "filePath": "mock/ct_brain_014",
+    "status": "Ready"
+  },
+  {
+    "studyId": "PET_CT_007",
+    "patientAlias": "PATIENT_C",
+    "modality": "PET/CT",
+    "acquisitionDate": "2026-03-05",
+    "filePath": "mock/pet_ct_007",
+    "status": "Ready"
+  }
+]

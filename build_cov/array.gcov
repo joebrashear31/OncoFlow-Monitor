@@ -1,0 +1,520 @@
+        -:    0:Source:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/array
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// -*- C++ -*-
+        -:    2://===----------------------------------------------------------------------===//
+        -:    3://
+        -:    4:// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+        -:    5:// See https://llvm.org/LICENSE.txt for license information.
+        -:    6:// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+        -:    7://
+        -:    8://===----------------------------------------------------------------------===//
+        -:    9:
+        -:   10:#ifndef _LIBCPP_ARRAY
+        -:   11:#define _LIBCPP_ARRAY
+        -:   12:
+        -:   13:/*
+        -:   14:    array synopsis
+        -:   15:
+        -:   16:namespace std
+        -:   17:{
+        -:   18:template <class T, size_t N >
+        -:   19:struct array
+        -:   20:{
+        -:   21:    // types:
+        -:   22:    typedef T & reference;
+        -:   23:    typedef const T & const_reference;
+        -:   24:    typedef implementation defined iterator;
+        -:   25:    typedef implementation defined const_iterator;
+        -:   26:    typedef size_t size_type;
+        -:   27:    typedef ptrdiff_t difference_type;
+        -:   28:    typedef T value_type;
+        -:   29:    typedef T* pointer;
+        -:   30:    typedef const T* const_pointer;
+        -:   31:    typedef std::reverse_iterator<iterator> reverse_iterator;
+        -:   32:    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+        -:   33:
+        -:   34:    // No explicit construct/copy/destroy for aggregate type
+        -:   35:    void fill(const T& u);                                      // constexpr in C++20
+        -:   36:    void swap(array& a) noexcept(is_nothrow_swappable_v<T>);    // constexpr in C++20
+        -:   37:
+        -:   38:    // iterators:
+        -:   39:    iterator begin() noexcept;                                  // constexpr in C++17
+        -:   40:    const_iterator begin() const noexcept;                      // constexpr in C++17
+        -:   41:    iterator end() noexcept;                                    // constexpr in C++17
+        -:   42:    const_iterator end() const noexcept;                        // constexpr in C++17
+        -:   43:
+        -:   44:    reverse_iterator rbegin() noexcept;                         // constexpr in C++17
+        -:   45:    const_reverse_iterator rbegin() const noexcept;             // constexpr in C++17
+        -:   46:    reverse_iterator rend() noexcept;                           // constexpr in C++17
+        -:   47:    const_reverse_iterator rend() const noexcept;               // constexpr in C++17
+        -:   48:
+        -:   49:    const_iterator cbegin() const noexcept;                     // constexpr in C++17
+        -:   50:    const_iterator cend() const noexcept;                       // constexpr in C++17
+        -:   51:    const_reverse_iterator crbegin() const noexcept;            // constexpr in C++17
+        -:   52:    const_reverse_iterator crend() const noexcept;              // constexpr in C++17
+        -:   53:
+        -:   54:    // capacity:
+        -:   55:    constexpr size_type size() const noexcept;
+        -:   56:    constexpr size_type max_size() const noexcept;
+        -:   57:    constexpr bool empty() const noexcept;
+        -:   58:
+        -:   59:    // element access:
+        -:   60:    reference operator[](size_type n);                          // constexpr in C++17
+        -:   61:    const_reference operator[](size_type n) const;              // constexpr in C++14
+        -:   62:    reference at(size_type n);                                  // constexpr in C++17
+        -:   63:    const_reference at(size_type n) const;                      // constexpr in C++14
+        -:   64:
+        -:   65:    reference front();                                          // constexpr in C++17
+        -:   66:    const_reference front() const;                              // constexpr in C++14
+        -:   67:    reference back();                                           // constexpr in C++17
+        -:   68:    const_reference back() const;                               // constexpr in C++14
+        -:   69:
+        -:   70:    T* data() noexcept;                                         // constexpr in C++17
+        -:   71:    const T* data() const noexcept;                             // constexpr in C++17
+        -:   72:};
+        -:   73:
+        -:   74:template <class T, class... U>
+        -:   75:  array(T, U...) -> array<T, 1 + sizeof...(U)>;                 // C++17
+        -:   76:
+        -:   77:template <class T, size_t N>
+        -:   78:  bool operator==(const array<T,N>& x, const array<T,N>& y);    // constexpr in C++20
+        -:   79:template <class T, size_t N>
+        -:   80:  bool operator!=(const array<T,N>& x, const array<T,N>& y);    // removed in C++20
+        -:   81:template <class T, size_t N>
+        -:   82:  bool operator<(const array<T,N>& x, const array<T,N>& y);     // removed in C++20
+        -:   83:template <class T, size_t N>
+        -:   84:  bool operator>(const array<T,N>& x, const array<T,N>& y);     // removed in C++20
+        -:   85:template <class T, size_t N>
+        -:   86:  bool operator<=(const array<T,N>& x, const array<T,N>& y);    // removed in C++20
+        -:   87:template <class T, size_t N>
+        -:   88:  bool operator>=(const array<T,N>& x, const array<T,N>& y);    // removed in C++20
+        -:   89:template<class T, size_t N>
+        -:   90:  constexpr synth-three-way-result<T>
+        -:   91:    operator<=>(const array<T, N>& x, const array<T, N>& y);    // since C++20
+        -:   92:
+        -:   93:template <class T, size_t N >
+        -:   94:  void swap(array<T,N>& x, array<T,N>& y) noexcept(noexcept(x.swap(y))); // constexpr in C++20
+        -:   95:
+        -:   96:template <class T, size_t N>
+        -:   97:  constexpr array<remove_cv_t<T>, N> to_array(T (&a)[N]);  // C++20
+        -:   98:template <class T, size_t N>
+        -:   99:  constexpr array<remove_cv_t<T>, N> to_array(T (&&a)[N]); // C++20
+        -:  100:
+        -:  101:template <class T> struct tuple_size;
+        -:  102:template <size_t I, class T> struct tuple_element;
+        -:  103:template <class T, size_t N> struct tuple_size<array<T, N>>;
+        -:  104:template <size_t I, class T, size_t N> struct tuple_element<I, array<T, N>>;
+        -:  105:template <size_t I, class T, size_t N> T& get(array<T, N>&) noexcept;               // constexpr in C++14
+        -:  106:template <size_t I, class T, size_t N> const T& get(const array<T, N>&) noexcept;   // constexpr in C++14
+        -:  107:template <size_t I, class T, size_t N> T&& get(array<T, N>&&) noexcept;             // constexpr in C++14
+        -:  108:template <size_t I, class T, size_t N> const T&& get(const array<T, N>&&) noexcept; // constexpr in C++14
+        -:  109:
+        -:  110:}  // std
+        -:  111:
+        -:  112:*/
+        -:  113:
+        -:  114:#include <__algorithm/equal.h>
+        -:  115:#include <__algorithm/fill_n.h>
+        -:  116:#include <__algorithm/lexicographical_compare.h>
+        -:  117:#include <__algorithm/lexicographical_compare_three_way.h>
+        -:  118:#include <__algorithm/swap_ranges.h>
+        -:  119:#include <__assert>
+        -:  120:#include <__config>
+        -:  121:#include <__fwd/array.h>
+        -:  122:#include <__iterator/reverse_iterator.h>
+        -:  123:#include <__iterator/wrap_iter.h>
+        -:  124:#include <__tuple/sfinae_helpers.h>
+        -:  125:#include <__type_traits/conditional.h>
+        -:  126:#include <__type_traits/conjunction.h>
+        -:  127:#include <__type_traits/is_array.h>
+        -:  128:#include <__type_traits/is_const.h>
+        -:  129:#include <__type_traits/is_constructible.h>
+        -:  130:#include <__type_traits/is_nothrow_constructible.h>
+        -:  131:#include <__type_traits/is_same.h>
+        -:  132:#include <__type_traits/is_swappable.h>
+        -:  133:#include <__type_traits/is_trivially_relocatable.h>
+        -:  134:#include <__type_traits/remove_cv.h>
+        -:  135:#include <__utility/empty.h>
+        -:  136:#include <__utility/integer_sequence.h>
+        -:  137:#include <__utility/move.h>
+        -:  138:#include <__utility/unreachable.h>
+        -:  139:#include <stdexcept>
+        -:  140:#include <version>
+        -:  141:
+        -:  142:// standard-mandated includes
+        -:  143:
+        -:  144:// [iterator.range]
+        -:  145:#include <__iterator/access.h>
+        -:  146:#include <__iterator/data.h>
+        -:  147:#include <__iterator/empty.h>
+        -:  148:#include <__iterator/reverse_access.h>
+        -:  149:#include <__iterator/size.h>
+        -:  150:
+        -:  151:// [array.syn]
+        -:  152:#include <compare>
+        -:  153:#include <initializer_list>
+        -:  154:
+        -:  155:// [tuple.helper]
+        -:  156:#include <__tuple/tuple_element.h>
+        -:  157:#include <__tuple/tuple_size.h>
+        -:  158:
+        -:  159:#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+        -:  160:#  pragma GCC system_header
+        -:  161:#endif
+        -:  162:
+        -:  163:_LIBCPP_PUSH_MACROS
+        -:  164:#include <__undef_macros>
+        -:  165:
+        -:  166:_LIBCPP_BEGIN_NAMESPACE_STD
+        -:  167:
+        -:  168:template <class _Tp, size_t _Size>
+        -:  169:struct _LIBCPP_TEMPLATE_VIS array {
+        -:  170:  using __trivially_relocatable = __conditional_t<__libcpp_is_trivially_relocatable<_Tp>::value, array, void>;
+        -:  171:
+        -:  172:  // types:
+        -:  173:  using __self          = array;
+        -:  174:  using value_type      = _Tp;
+        -:  175:  using reference       = value_type&;
+        -:  176:  using const_reference = const value_type&;
+        -:  177:  using pointer         = value_type*;
+        -:  178:  using const_pointer   = const value_type*;
+        -:  179:#if defined(_LIBCPP_ABI_USE_WRAP_ITER_IN_STD_ARRAY)
+        -:  180:  using iterator       = __wrap_iter<pointer>;
+        -:  181:  using const_iterator = __wrap_iter<const_pointer>;
+        -:  182:#else
+        -:  183:  using iterator       = pointer;
+        -:  184:  using const_iterator = const_pointer;
+        -:  185:#endif
+        -:  186:  using size_type              = size_t;
+        -:  187:  using difference_type        = ptrdiff_t;
+        -:  188:  using reverse_iterator       = std::reverse_iterator<iterator>;
+        -:  189:  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+        -:  190:
+        -:  191:  _Tp __elems_[_Size];
+        -:  192:
+        -:  193:  // No explicit construct/copy/destroy for aggregate type
+        -:  194:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 void fill(const value_type& __u) {
+        -:  195:    std::fill_n(data(), _Size, __u);
+        -:  196:  }
+        -:  197:
+        -:  198:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 void swap(array& __a) _NOEXCEPT_(__is_nothrow_swappable_v<_Tp>) {
+        -:  199:    std::swap_ranges(data(), data() + _Size, __a.data());
+        -:  200:  }
+        -:  201:
+        -:  202:  // iterators:
+        -:  203:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator begin() _NOEXCEPT { return iterator(data()); }
+        -:  204:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator begin() const _NOEXCEPT {
+        -:  205:    return const_iterator(data());
+        -:  206:  }
+        -:  207:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator end() _NOEXCEPT { return iterator(data() + _Size); }
+        -:  208:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator end() const _NOEXCEPT {
+        -:  209:    return const_iterator(data() + _Size);
+        -:  210:  }
+        -:  211:
+        -:  212:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rbegin() _NOEXCEPT {
+        -:  213:    return reverse_iterator(end());
+        -:  214:  }
+        -:  215:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator rbegin() const _NOEXCEPT {
+        -:  216:    return const_reverse_iterator(end());
+        -:  217:  }
+        -:  218:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rend() _NOEXCEPT {
+        -:  219:    return reverse_iterator(begin());
+        -:  220:  }
+        -:  221:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator rend() const _NOEXCEPT {
+        -:  222:    return const_reverse_iterator(begin());
+        -:  223:  }
+        -:  224:
+        -:  225:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cbegin() const _NOEXCEPT { return begin(); }
+        -:  226:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cend() const _NOEXCEPT { return end(); }
+        -:  227:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator crbegin() const _NOEXCEPT {
+        -:  228:    return rbegin();
+        -:  229:  }
+        -:  230:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator crend() const _NOEXCEPT { return rend(); }
+        -:  231:
+        -:  232:  // capacity:
+        -:  233:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR size_type size() const _NOEXCEPT { return _Size; }
+        -:  234:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR size_type max_size() const _NOEXCEPT { return _Size; }
+        -:  235:  _LIBCPP_NODISCARD _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR bool empty() const _NOEXCEPT { return _Size == 0; }
+        -:  236:
+        -:  237:  // element access:
+        -:  238:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference operator[](size_type __n) _NOEXCEPT {
+        -:  239:    _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(__n < _Size, "out-of-bounds access in std::array<T, N>");
+        -:  240:    return __elems_[__n];
+        -:  241:  }
+        -:  242:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference operator[](size_type __n) const _NOEXCEPT {
+        -:  243:    _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(__n < _Size, "out-of-bounds access in std::array<T, N>");
+        -:  244:    return __elems_[__n];
+        -:  245:  }
+        -:  246:
+        -:  247:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference at(size_type __n) {
+        -:  248:    if (__n >= _Size)
+        -:  249:      __throw_out_of_range("array::at");
+        -:  250:    return __elems_[__n];
+        -:  251:  }
+        -:  252:
+        -:  253:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference at(size_type __n) const {
+        -:  254:    if (__n >= _Size)
+        -:  255:      __throw_out_of_range("array::at");
+        -:  256:    return __elems_[__n];
+        -:  257:  }
+        -:  258:
+        -:  259:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference front() _NOEXCEPT { return (*this)[0]; }
+        -:  260:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference front() const _NOEXCEPT { return (*this)[0]; }
+        -:  261:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference back() _NOEXCEPT { return (*this)[_Size - 1]; }
+        -:  262:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference back() const _NOEXCEPT {
+        -:  263:    return (*this)[_Size - 1];
+        -:  264:  }
+        -:  265:
+        -:  266:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 value_type* data() _NOEXCEPT { return __elems_; }
+        1:  267:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const value_type* data() const _NOEXCEPT { return __elems_; }
+        -:  268:};
+        -:  269:
+        -:  270:template <class _Tp>
+        -:  271:struct _LIBCPP_TEMPLATE_VIS array<_Tp, 0> {
+        -:  272:  // types:
+        -:  273:  typedef array __self;
+        -:  274:  typedef _Tp value_type;
+        -:  275:  typedef value_type& reference;
+        -:  276:  typedef const value_type& const_reference;
+        -:  277:  typedef value_type* iterator;
+        -:  278:  typedef const value_type* const_iterator;
+        -:  279:  typedef value_type* pointer;
+        -:  280:  typedef const value_type* const_pointer;
+        -:  281:  typedef size_t size_type;
+        -:  282:  typedef ptrdiff_t difference_type;
+        -:  283:  typedef std::reverse_iterator<iterator> reverse_iterator;
+        -:  284:  typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+        -:  285:
+        -:  286:  typedef __conditional_t<is_const<_Tp>::value, const __empty, __empty> _EmptyType;
+        -:  287:
+        -:  288:  struct _ArrayInStructT {
+        -:  289:    _Tp __data_[1];
+        -:  290:  };
+        -:  291:  _ALIGNAS_TYPE(_ArrayInStructT) _EmptyType __elems_[sizeof(_ArrayInStructT)];
+        -:  292:
+        -:  293:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 value_type* data() _NOEXCEPT { return nullptr; }
+        -:  294:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const value_type* data() const _NOEXCEPT { return nullptr; }
+        -:  295:
+        -:  296:  // No explicit construct/copy/destroy for aggregate type
+        -:  297:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 void fill(const value_type&) {
+        -:  298:    static_assert(!is_const<_Tp>::value, "cannot fill zero-sized array of type 'const T'");
+        -:  299:  }
+        -:  300:
+        -:  301:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 void swap(array&) _NOEXCEPT {
+        -:  302:    static_assert(!is_const<_Tp>::value, "cannot swap zero-sized array of type 'const T'");
+        -:  303:  }
+        -:  304:
+        -:  305:  // iterators:
+        -:  306:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator begin() _NOEXCEPT { return iterator(data()); }
+        -:  307:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator begin() const _NOEXCEPT {
+        -:  308:    return const_iterator(data());
+        -:  309:  }
+        -:  310:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator end() _NOEXCEPT { return iterator(data()); }
+        -:  311:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator end() const _NOEXCEPT {
+        -:  312:    return const_iterator(data());
+        -:  313:  }
+        -:  314:
+        -:  315:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rbegin() _NOEXCEPT {
+        -:  316:    return reverse_iterator(end());
+        -:  317:  }
+        -:  318:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator rbegin() const _NOEXCEPT {
+        -:  319:    return const_reverse_iterator(end());
+        -:  320:  }
+        -:  321:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rend() _NOEXCEPT {
+        -:  322:    return reverse_iterator(begin());
+        -:  323:  }
+        -:  324:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator rend() const _NOEXCEPT {
+        -:  325:    return const_reverse_iterator(begin());
+        -:  326:  }
+        -:  327:
+        -:  328:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cbegin() const _NOEXCEPT { return begin(); }
+        -:  329:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cend() const _NOEXCEPT { return end(); }
+        -:  330:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator crbegin() const _NOEXCEPT {
+        -:  331:    return rbegin();
+        -:  332:  }
+        -:  333:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator crend() const _NOEXCEPT { return rend(); }
+        -:  334:
+        -:  335:  // capacity:
+        -:  336:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR size_type size() const _NOEXCEPT { return 0; }
+        -:  337:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR size_type max_size() const _NOEXCEPT { return 0; }
+        -:  338:  _LIBCPP_NODISCARD _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR bool empty() const _NOEXCEPT { return true; }
+        -:  339:
+        -:  340:  // element access:
+        -:  341:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference operator[](size_type) _NOEXCEPT {
+        -:  342:    _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::operator[] on a zero-sized array");
+        -:  343:    __libcpp_unreachable();
+        -:  344:  }
+        -:  345:
+        -:  346:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference operator[](size_type) const _NOEXCEPT {
+        -:  347:    _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::operator[] on a zero-sized array");
+        -:  348:    __libcpp_unreachable();
+        -:  349:  }
+        -:  350:
+        -:  351:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference at(size_type) {
+        -:  352:    __throw_out_of_range("array<T, 0>::at");
+        -:  353:    __libcpp_unreachable();
+        -:  354:  }
+        -:  355:
+        -:  356:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference at(size_type) const {
+        -:  357:    __throw_out_of_range("array<T, 0>::at");
+        -:  358:    __libcpp_unreachable();
+        -:  359:  }
+        -:  360:
+        -:  361:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference front() _NOEXCEPT {
+        -:  362:    _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::front() on a zero-sized array");
+        -:  363:    __libcpp_unreachable();
+        -:  364:  }
+        -:  365:
+        -:  366:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference front() const _NOEXCEPT {
+        -:  367:    _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::front() on a zero-sized array");
+        -:  368:    __libcpp_unreachable();
+        -:  369:  }
+        -:  370:
+        -:  371:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference back() _NOEXCEPT {
+        -:  372:    _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::back() on a zero-sized array");
+        -:  373:    __libcpp_unreachable();
+        -:  374:  }
+        -:  375:
+        -:  376:  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference back() const _NOEXCEPT {
+        -:  377:    _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::back() on a zero-sized array");
+        -:  378:    __libcpp_unreachable();
+        -:  379:  }
+        -:  380:};
+        -:  381:
+        -:  382:#if _LIBCPP_STD_VER >= 17
+        -:  383:template <class _Tp, class... _Args, class = enable_if_t<__all<_IsSame<_Tp, _Args>::value...>::value> >
+        -:  384:array(_Tp, _Args...) -> array<_Tp, 1 + sizeof...(_Args)>;
+        -:  385:#endif
+        -:  386:
+        -:  387:template <class _Tp, size_t _Size>
+        -:  388:inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 bool
+        -:  389:operator==(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y) {
+        -:  390:  return std::equal(__x.begin(), __x.end(), __y.begin());
+        -:  391:}
+        -:  392:
+        -:  393:#if _LIBCPP_STD_VER <= 17
+        -:  394:
+        -:  395:template <class _Tp, size_t _Size>
+        -:  396:inline _LIBCPP_HIDE_FROM_ABI bool operator!=(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y) {
+        -:  397:  return !(__x == __y);
+        -:  398:}
+        -:  399:
+        -:  400:template <class _Tp, size_t _Size>
+        -:  401:inline _LIBCPP_HIDE_FROM_ABI bool operator<(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y) {
+        -:  402:  return std::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
+        -:  403:}
+        -:  404:
+        -:  405:template <class _Tp, size_t _Size>
+        -:  406:inline _LIBCPP_HIDE_FROM_ABI bool operator>(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y) {
+        -:  407:  return __y < __x;
+        -:  408:}
+        -:  409:
+        -:  410:template <class _Tp, size_t _Size>
+        -:  411:inline _LIBCPP_HIDE_FROM_ABI bool operator<=(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y) {
+        -:  412:  return !(__y < __x);
+        -:  413:}
+        -:  414:
+        -:  415:template <class _Tp, size_t _Size>
+        -:  416:inline _LIBCPP_HIDE_FROM_ABI bool operator>=(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y) {
+        -:  417:  return !(__x < __y);
+        -:  418:}
+        -:  419:
+        -:  420:#else // _LIBCPP_STD_VER <= 17
+        -:  421:
+        -:  422:template <class _Tp, size_t _Size>
+        -:  423:_LIBCPP_HIDE_FROM_ABI constexpr __synth_three_way_result<_Tp>
+        -:  424:operator<=>(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y) {
+        -:  425:  return std::lexicographical_compare_three_way(
+        -:  426:      __x.begin(), __x.end(), __y.begin(), __y.end(), std::__synth_three_way);
+        -:  427:}
+        -:  428:
+        -:  429:#endif // _LIBCPP_STD_VER <= 17
+        -:  430:
+        -:  431:template <class _Tp, size_t _Size, __enable_if_t<_Size == 0 || __is_swappable_v<_Tp>, int> = 0>
+        -:  432:inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 void swap(array<_Tp, _Size>& __x, array<_Tp, _Size>& __y)
+        -:  433:    _NOEXCEPT_(noexcept(__x.swap(__y))) {
+        -:  434:  __x.swap(__y);
+        -:  435:}
+        -:  436:
+        -:  437:template <class _Tp, size_t _Size>
+        -:  438:struct _LIBCPP_TEMPLATE_VIS tuple_size<array<_Tp, _Size> > : public integral_constant<size_t, _Size> {};
+        -:  439:
+        -:  440:template <size_t _Ip, class _Tp, size_t _Size>
+        -:  441:struct _LIBCPP_TEMPLATE_VIS tuple_element<_Ip, array<_Tp, _Size> > {
+        -:  442:  static_assert(_Ip < _Size, "Index out of bounds in std::tuple_element<> (std::array)");
+        -:  443:  typedef _Tp type;
+        -:  444:};
+        -:  445:
+        -:  446:template <size_t _Ip, class _Tp, size_t _Size>
+        -:  447:inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 _Tp& get(array<_Tp, _Size>& __a) _NOEXCEPT {
+        -:  448:  static_assert(_Ip < _Size, "Index out of bounds in std::get<> (std::array)");
+        -:  449:  return __a.__elems_[_Ip];
+        -:  450:}
+        -:  451:
+        -:  452:template <size_t _Ip, class _Tp, size_t _Size>
+        -:  453:inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const _Tp& get(const array<_Tp, _Size>& __a) _NOEXCEPT {
+        -:  454:  static_assert(_Ip < _Size, "Index out of bounds in std::get<> (const std::array)");
+        -:  455:  return __a.__elems_[_Ip];
+        -:  456:}
+        -:  457:
+        -:  458:template <size_t _Ip, class _Tp, size_t _Size>
+        -:  459:inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 _Tp&& get(array<_Tp, _Size>&& __a) _NOEXCEPT {
+        -:  460:  static_assert(_Ip < _Size, "Index out of bounds in std::get<> (std::array &&)");
+        -:  461:  return std::move(__a.__elems_[_Ip]);
+        -:  462:}
+        -:  463:
+        -:  464:template <size_t _Ip, class _Tp, size_t _Size>
+        -:  465:inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const _Tp&& get(const array<_Tp, _Size>&& __a) _NOEXCEPT {
+        -:  466:  static_assert(_Ip < _Size, "Index out of bounds in std::get<> (const std::array &&)");
+        -:  467:  return std::move(__a.__elems_[_Ip]);
+        -:  468:}
+        -:  469:
+        -:  470:#if _LIBCPP_STD_VER >= 20
+        -:  471:
+        -:  472:template <typename _Tp, size_t _Size, size_t... _Index>
+        -:  473:_LIBCPP_HIDE_FROM_ABI constexpr array<remove_cv_t<_Tp>, _Size>
+        -:  474:__to_array_lvalue_impl(_Tp (&__arr)[_Size], index_sequence<_Index...>) {
+        -:  475:  return {{__arr[_Index]...}};
+        -:  476:}
+        -:  477:
+        -:  478:template <typename _Tp, size_t _Size, size_t... _Index>
+        -:  479:_LIBCPP_HIDE_FROM_ABI constexpr array<remove_cv_t<_Tp>, _Size>
+        -:  480:__to_array_rvalue_impl(_Tp (&&__arr)[_Size], index_sequence<_Index...>) {
+        -:  481:  return {{std::move(__arr[_Index])...}};
+        -:  482:}
+        -:  483:
+        -:  484:template <typename _Tp, size_t _Size>
+        -:  485:_LIBCPP_HIDE_FROM_ABI constexpr array<remove_cv_t<_Tp>, _Size>
+        -:  486:to_array(_Tp (&__arr)[_Size]) noexcept(is_nothrow_constructible_v<_Tp, _Tp&>) {
+        -:  487:  static_assert(!is_array_v<_Tp>, "[array.creation]/1: to_array does not accept multidimensional arrays.");
+        -:  488:  static_assert(is_constructible_v<_Tp, _Tp&>, "[array.creation]/1: to_array requires copy constructible elements.");
+        -:  489:  return std::__to_array_lvalue_impl(__arr, make_index_sequence<_Size>());
+        -:  490:}
+        -:  491:
+        -:  492:template <typename _Tp, size_t _Size>
+        -:  493:_LIBCPP_HIDE_FROM_ABI constexpr array<remove_cv_t<_Tp>, _Size>
+        -:  494:to_array(_Tp (&&__arr)[_Size]) noexcept(is_nothrow_move_constructible_v<_Tp>) {
+        -:  495:  static_assert(!is_array_v<_Tp>, "[array.creation]/4: to_array does not accept multidimensional arrays.");
+        -:  496:  static_assert(is_move_constructible_v<_Tp>, "[array.creation]/4: to_array requires move constructible elements.");
+        -:  497:  return std::__to_array_rvalue_impl(std::move(__arr), make_index_sequence<_Size>());
+        -:  498:}
+        -:  499:
+        -:  500:#endif // _LIBCPP_STD_VER >= 20
+        -:  501:
+        -:  502:_LIBCPP_END_NAMESPACE_STD
+        -:  503:
+        -:  504:_LIBCPP_POP_MACROS
+        -:  505:
+        -:  506:#if !defined(_LIBCPP_REMOVE_TRANSITIVE_INCLUDES) && _LIBCPP_STD_VER <= 20
+        -:  507:#  include <algorithm>
+        -:  508:#  include <concepts>
+        -:  509:#  include <cstdlib>
+        -:  510:#  include <iterator>
+        -:  511:#  include <type_traits>
+        -:  512:#  include <utility>
+        -:  513:#endif
+        -:  514:
+        -:  515:#endif // _LIBCPP_ARRAY

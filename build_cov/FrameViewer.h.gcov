@@ -1,0 +1,68 @@
+        -:    0:Source:/Users/joebrashear/Desktop/OncoFlow-Monitor/src/widgets/FrameViewer.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#pragma once
+        -:    2:
+        -:    3:#include <QWidget>
+        -:    4:#include <QImage>
+        -:    5:
+        -:    6:class QLabel;
+        -:    7:class QPushButton;
+        -:    8:class QTimer;
+        -:    9:class QMediaPlayer;
+        -:   10:class QVideoSink;
+        -:   11:class FrameSource;
+        -:   12:
+        -:   13:class FrameViewer : public QWidget
+        -:   14:{
+      170:   15:    Q_OBJECT
+        -:   16:public:
+        -:   17:    explicit FrameViewer(QWidget *parent = nullptr);
+        -:   18:    ~FrameViewer() override;
+        -:   19:
+        -:   20:    // Feed a single frame directly (for live hardware use)
+        -:   21:    void setFrame(const QImage &image);
+        -:   22:    void clearFrame();
+        -:   23:
+        -:   24:    // Image-sequence playback
+        -:   25:    bool loadFolder(const QString &folderPath);
+        -:   26:
+        -:   27:    // Video file playback (.mp4, .mov, .avi, .mkv, .m4v)
+        -:   28:    bool loadVideo(const QString &filePath);
+        -:   29:
+        -:   30:    void play();
+        -:   31:    void stop();
+        -:   32:    bool isPlaying() const;
+        -:   33:
+        -:   34:protected:
+        -:   35:    void resizeEvent(QResizeEvent *event) override;
+        -:   36:
+        -:   37:private slots:
+        -:   38:    void onNextFrame();
+        -:   39:    void onLoadFolderClicked();
+        -:   40:    void onLoadVideoClicked();
+        -:   41:    void onPlayPauseClicked();
+        -:   42:
+        -:   43:private:
+        -:   44:    void updatePixmap();
+        -:   45:    void updateControls();
+        -:   46:
+        -:   47:    QImage        m_currentImage;
+        -:   48:    QLabel       *m_imageLabel      = nullptr;
+        -:   49:    QPushButton  *m_loadFolderBtn   = nullptr;
+        -:   50:    QPushButton  *m_loadVideoBtn    = nullptr;
+        -:   51:    QPushButton  *m_playBtn         = nullptr;
+        -:   52:    QLabel       *m_frameInfo       = nullptr;
+        -:   53:
+        -:   54:    // Image-sequence mode
+        -:   55:    QTimer       *m_timer           = nullptr;
+        -:   56:    FrameSource  *m_source          = nullptr;
+        -:   57:    int           m_currentIndex    = 0;
+        -:   58:
+        -:   59:    // Video mode
+        -:   60:    QMediaPlayer *m_player          = nullptr;
+        -:   61:    QVideoSink   *m_videoSink       = nullptr;
+        -:   62:    bool          m_videoMode       = false;
+        -:   63:};

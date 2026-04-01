@@ -1,0 +1,8 @@
+set(__QT_DEPLOY_TARGET_OncoFlowMonitor_FILE /Users/joebrashear/Desktop/OncoFlow-Monitor/build_cov/OncoFlowMonitor)
+set(__QT_DEPLOY_TARGET_OncoFlowMonitor_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_OncoFlowTestLib_FILE /Users/joebrashear/Desktop/OncoFlow-Monitor/build_cov/libOncoFlowTestLib.a)
+set(__QT_DEPLOY_TARGET_OncoFlowTestLib_TYPE STATIC_LIBRARY)
+set(__QT_DEPLOY_TARGET_tst_FrameSource_FILE /Users/joebrashear/Desktop/OncoFlow-Monitor/build_cov/tst_FrameSource)
+set(__QT_DEPLOY_TARGET_tst_FrameSource_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_tst_FrameViewer_FILE /Users/joebrashear/Desktop/OncoFlow-Monitor/build_cov/tst_FrameViewer)
+set(__QT_DEPLOY_TARGET_tst_FrameViewer_TYPE EXECUTABLE)

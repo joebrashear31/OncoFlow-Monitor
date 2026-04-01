@@ -1,0 +1,23 @@
+        -:    0:Source:/Users/joebrashear/Desktop/OncoFlow-Monitor/src/services/FrameSource.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#pragma once 
+        -:    2:
+        -:    3:#include <QString>
+        -:    4:#include <QStringList>
+        -:    5:#include <QImage>
+        -:    6:
+        -:    7:class FrameSource
+        -:    8:{
+        -:    9:public:
+        -:   10:    bool loadFromFolder(const QString &folderPath);
+        -:   11:    int frameCount() const;
+        -:   12:    QImage getFrame(int index) const;
+        -:   13:    QString getFramePath(int index) const;
+        -:   14:    bool isLoaded() const;
+        -:   15:private:
+        -:   16:    QStringList framePaths_m;
+        -:   17:};
+        -:   18:

@@ -1,0 +1,88 @@
+        -:    0:Source:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/next.h
+        -:    0:Graph:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcno
+        -:    0:Data:./CMakeFiles/OncoFlowTestLib.dir/src/widgets/FrameViewer.cpp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:// -*- C++ -*-
+        -:    2://===----------------------------------------------------------------------===//
+        -:    3://
+        -:    4:// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+        -:    5:// See https://llvm.org/LICENSE.txt for license information.
+        -:    6:// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+        -:    7://
+        -:    8://===----------------------------------------------------------------------===//
+        -:    9:
+        -:   10:#ifndef _LIBCPP___ITERATOR_NEXT_H
+        -:   11:#define _LIBCPP___ITERATOR_NEXT_H
+        -:   12:
+        -:   13:#include <__assert>
+        -:   14:#include <__config>
+        -:   15:#include <__iterator/advance.h>
+        -:   16:#include <__iterator/concepts.h>
+        -:   17:#include <__iterator/incrementable_traits.h>
+        -:   18:#include <__iterator/iterator_traits.h>
+        -:   19:#include <__type_traits/enable_if.h>
+        -:   20:
+        -:   21:#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+        -:   22:#  pragma GCC system_header
+        -:   23:#endif
+        -:   24:
+        -:   25:_LIBCPP_BEGIN_NAMESPACE_STD
+        -:   26:
+        -:   27:template <class _InputIter, __enable_if_t<__has_input_iterator_category<_InputIter>::value, int> = 0>
+        -:   28:inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 _InputIter
+    #####:   29:next(_InputIter __x, typename iterator_traits<_InputIter>::difference_type __n = 1) {
+        -:   30:  // Calling `advance` with a negative value on a non-bidirectional iterator is a no-op in the current implementation.
+        -:   31:  // Note that this check duplicates the similar check in `std::advance`.
+        -:   32:  _LIBCPP_ASSERT_PEDANTIC(__n >= 0 || __has_bidirectional_iterator_category<_InputIter>::value,
+        -:   33:                          "Attempt to next(it, n) with negative n on a non-bidirectional iterator");
+        -:   34:
+    #####:   35:  std::advance(__x, __n);
+    #####:   36:  return __x;
+        -:   37:}
+        -:   38:
+        -:   39:#if _LIBCPP_STD_VER >= 20
+        -:   40:
+        -:   41:// [range.iter.op.next]
+        -:   42:
+        -:   43:namespace ranges {
+        -:   44:namespace __next {
+        -:   45:
+        -:   46:struct __fn {
+        -:   47:  template <input_or_output_iterator _Ip>
+        -:   48:  _LIBCPP_HIDE_FROM_ABI constexpr _Ip operator()(_Ip __x) const {
+        -:   49:    ++__x;
+        -:   50:    return __x;
+        -:   51:  }
+        -:   52:
+        -:   53:  template <input_or_output_iterator _Ip>
+        -:   54:  _LIBCPP_HIDE_FROM_ABI constexpr _Ip operator()(_Ip __x, iter_difference_t<_Ip> __n) const {
+        -:   55:    ranges::advance(__x, __n);
+        -:   56:    return __x;
+        -:   57:  }
+        -:   58:
+        -:   59:  template <input_or_output_iterator _Ip, sentinel_for<_Ip> _Sp>
+        -:   60:  _LIBCPP_HIDE_FROM_ABI constexpr _Ip operator()(_Ip __x, _Sp __bound_sentinel) const {
+        -:   61:    ranges::advance(__x, __bound_sentinel);
+        -:   62:    return __x;
+        -:   63:  }
+        -:   64:
+        -:   65:  template <input_or_output_iterator _Ip, sentinel_for<_Ip> _Sp>
+        -:   66:  _LIBCPP_HIDE_FROM_ABI constexpr _Ip operator()(_Ip __x, iter_difference_t<_Ip> __n, _Sp __bound_sentinel) const {
+        -:   67:    ranges::advance(__x, __n, __bound_sentinel);
+        -:   68:    return __x;
+        -:   69:  }
+        -:   70:};
+        -:   71:
+        -:   72:} // namespace __next
+        -:   73:
+        -:   74:inline namespace __cpo {
+        -:   75:inline constexpr auto next = __next::__fn{};
+        -:   76:} // namespace __cpo
+        -:   77:} // namespace ranges
+        -:   78:
+        -:   79:#endif // _LIBCPP_STD_VER >= 20
+        -:   80:
+        -:   81:_LIBCPP_END_NAMESPACE_STD
+        -:   82:
+        -:   83:#endif // _LIBCPP___ITERATOR_NEXT_H

@@ -15,6 +15,7 @@ class ConfigPanel;
 class StatusPanel;
 class LogPanel;
 class HistoryPanel;
+class FrameViewer;
 class PipelineController;
 class HistoryService;
 
@@ -49,6 +50,7 @@ private:
     StatusPanel *m_statusPanel = nullptr;
     LogPanel *m_logPanel = nullptr;
     HistoryPanel *m_historyPanel = nullptr;
+    FrameViewer *m_frameViewer = nullptr;
 
     // Pipeline
     PipelineController *m_pipelineController = nullptr;
